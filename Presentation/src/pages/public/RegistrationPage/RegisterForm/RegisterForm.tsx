@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../auth/AuthContext/AuthContext';
-import { registerSchema, type RegisterFormData } from '../../../../auth/schemas';
+import { registerSchema, type RegisterFormData } from '../../../../schemas';
 import styles from './RegisterForm.module.css'
 
 export const RegistrationForm = () => {
@@ -32,7 +32,7 @@ export const RegistrationForm = () => {
         message: 'Неверный email или пароль',
       });
     }
-    navigate('/user_home_page');
+    navigate('/userAccount');
   };
 
   return (

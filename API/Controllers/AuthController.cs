@@ -41,7 +41,7 @@ namespace API.Controllers
                 var user = await _userService.RegisterAsync(dto);
                 // После регистрации сразу генерируем JWT-токен
                 var token = GenerateJwtToken(user);
-                return Ok(new { user.Id, user.Name, user.Email, Token = token });
+                return Ok(new { user.Id, user.Name, user.Email, user.AvatarUrl, Token = token });
             }
             catch (Exception ex)
             {
@@ -68,7 +68,7 @@ namespace API.Controllers
             {
                 var user = await _userService.AuthenticateAsync(dto);
                 var token = GenerateJwtToken(user);
-                return Ok(new { user.Id, user.Name, user.Email, Token = token });
+                return Ok(new { user.Id, user.Name, user.Email, user.AvatarUrl, Token = token });
             }
             catch (Exception ex)
             {

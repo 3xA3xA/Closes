@@ -17,6 +17,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       const userData = await apiLogin(credentials);
       localStorage.setItem('accessToken', userData.token || '');
+      console.log('userData при логинации', userData)
       setUser(userData);
     } catch (error) {
       console.error('Login failed:', error);
@@ -36,6 +37,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [])
   
   const logout = useCallback(() => {
+    console.log('aлибаба')
     localStorage.removeItem('accessToken');
     setUser(null);
   }, []);

@@ -10,7 +10,6 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize] // Все методы этого контроллера требуют аутентификации
     public class AccountController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -37,18 +36,19 @@ namespace API.Controllers
         [SwaggerResponse(200, "Данные аккаунта успешно обновлены", typeof(UpdateUserAccountDto))]
         [SwaggerResponse(400, "Ошибка обновления аккаунта")]
         [SwaggerResponse(401, "Пользователь не аутентифицирован")]
-        public async Task<IActionResult> UpdateAccount([FromBody] UpdateUserAccountDto updateDto)
+        public async Task<IActionResult> UpdateAccount([FromForm] UpdateUserAccountDto updateDto)
         {
-            // Код получения идентификатора пользователя из claim "sub"
-            var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub);
-            if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out Guid userId))
-            {
-                return Unauthorized("Идентификатор пользователя отсутствует или имеет неверный формат.");
-            }
+            //// Код получения идентификатора пользователя из claim "sub"
+            //var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub);
+            //if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out Guid userId))
+            //{
+            //    return Unauthorized("Идентификатор пользователя отсутствует или имеет неверный формат.");
+            //}
 
             try
             {
-                var updatedUser = await _userService.UpdateAccountAsync(userId, updateDto);
+                //var updatedUser = await _userService.UpdateAccountAsync(userId, updateDto);
+                var updatedUser = await _userService.UpdateAccountAsync(updateDto);
                 return Ok(new
                 {
                     updatedUser.Id,
@@ -61,6 +61,8 @@ namespace API.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+
+
         }
 
         /// <summary>
@@ -80,47 +82,51 @@ namespace API.Controllers
         [SwaggerResponse(401, "Пользователь не аутентифицирован")]
         public async Task<IActionResult> UploadAvatar([FromForm] UploadAvatarDto uploadDto)
         {
-            if (uploadDto == null || uploadDto.Avatar == null || uploadDto.Avatar.Length == 0)
+            if (uploadDto?.Avatar == null || uploadDto.Avatar.Length == 0)
             {
                 return BadRequest("Файл не выбран или пуст.");
             }
 
-            // Получаем идентификатор пользователя из JWT (claim "sub")
-            var userIdClaim = User.FindFirst(JwtRegisteredClaimNames.Sub);
-            if (userIdClaim == null || !Guid.TryParse(userIdClaim.Value, out Guid userId))
+            try
             {
-                return Unauthorized("Идентификатор пользователя отсутствует или имеет неверный формат.");
+                // 1. Определяем корневую папку для загрузки
+                string contentRootPath = _env.ContentRootPath; // Используем ContentRoot вместо WebRoot
+                string uploadsFolder = Path.Combine(contentRootPath, "Uploads", "Avatars");
+
+                // 2. Создаем папку, если не существует
+                if (!Directory.Exists(uploadsFolder))
+                {
+                    Directory.CreateDirectory(uploadsFolder);
+                }
+
+                // 3. Генерируем уникальное имя файла
+                string fileExtension = Path.GetExtension(uploadDto.Avatar.FileName);
+                string uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
+                string fullPath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                // 4. Сохраняем файл
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await uploadDto.Avatar.CopyToAsync(stream);
+                }
+
+                // 5. Формируем относительный путь для БД
+                string relativePath = Path.Combine("Uploads", "Avatars", uniqueFileName)
+                    .Replace("\\", "/");
+
+                // 6. Обновляем пользователя
+                var updatedUser = await _userService.UpdateAvatarAsync(uploadDto.Id, relativePath);
+
+                return Ok(new
+                {
+                    AvatarUrl = relativePath,
+                    FullPath = fullPath // Для отладки (в продакшене удалить)
+                });
             }
-
-            // Определяем папку для загрузки: wwwroot/uploads/avatars
-            string folderPath = Path.Combine("uploads", "avatars");
-            string webRootPath = _env.WebRootPath;  // Получаем путь к wwwroot
-            string fullFolderPath = Path.Combine(webRootPath, folderPath);
-
-            // Если папка не существует, создаем её
-            if (!Directory.Exists(fullFolderPath))
+            catch (Exception ex)
             {
-                Directory.CreateDirectory(fullFolderPath);
+                return StatusCode(500, "Произошла ошибка при загрузке файла");
             }
-
-            // Генерируем уникальное имя файла с сохранением оригинального расширения
-            string fileExtension = Path.GetExtension(uploadDto.Avatar.FileName);
-            string uniqueFileName = $"{Guid.NewGuid()}{fileExtension}";
-            string fullFilePath = Path.Combine(fullFolderPath, uniqueFileName);
-
-            // Сохраняем файл
-            using (var stream = new FileStream(fullFilePath, FileMode.Create))
-            {
-                await uploadDto.Avatar.CopyToAsync(stream);
-            }
-
-            // Формируем относительный путь, который будет сохранен в базе (например, "uploads/avatars/uniqueFileName.jpg")
-            string relativePath = Path.Combine(folderPath, uniqueFileName).Replace("\\", "/");
-
-            // Обновляем поле AvatarUrl для пользователя через сервис
-            var updatedUser = await _userService.UpdateAvatarAsync(userId, relativePath);
-
-            return Ok(new { AvatarUrl = updatedUser.AvatarUrl });
         }
     }
 }

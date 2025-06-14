@@ -33,7 +33,8 @@ namespace Application.Services
             {
                 Name = registerDto.Name,
                 Email = registerDto.Email,
-                PasswordHash = hashedPassword
+                PasswordHash = hashedPassword,
+                AvatarUrl = string.Empty,
             };
 
             _dbContext.Users.Add(user);
@@ -49,10 +50,10 @@ namespace Application.Services
             return user;
         }
 
-        public async Task<User> UpdateAccountAsync(Guid userId, UpdateUserAccountDto updateDto)
+        public async Task<User> UpdateAccountAsync(UpdateUserAccountDto updateDto)
         {
             // Находим пользователя по его идентификатору
-            var user = await _dbContext.Users.FindAsync(userId);
+            var user = await _dbContext.Users.FindAsync(updateDto.Id);
             if (user == null)
                 throw new Exception("Пользователь не найден.");
 
@@ -60,7 +61,7 @@ namespace Application.Services
             if (!string.IsNullOrWhiteSpace(updateDto.Email) && updateDto.Email != user.Email)
             {
                 // Проверка уникальности email
-                bool exists = await _dbContext.Users.AnyAsync(u => u.Email == updateDto.Email && u.Id != userId);
+                bool exists = await _dbContext.Users.AnyAsync(u => u.Email == updateDto.Email && u.Id != updateDto.Id);
                 if (exists)
                     throw new Exception("Пользователь с таким email уже существует.");
 
@@ -93,9 +94,9 @@ namespace Application.Services
             return user;
         }
 
-        public async Task<User> UpdateAvatarAsync(Guid userId, string avatarRelativePath)
+        public async Task<User> UpdateAvatarAsync(Guid id, string avatarRelativePath)
         {
-            var user = await _dbContext.Users.FindAsync(userId);
+            var user = await _dbContext.Users.FindAsync(id);
             if (user == null)
                 throw new Exception("Пользователь не найден.");
 

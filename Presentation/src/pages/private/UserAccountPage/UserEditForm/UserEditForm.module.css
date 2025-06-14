@@ -1,0 +1,25 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+}
+
+.formGroup {
+    width: 100%;
+}
+
+.formGroup input {
+    border-radius: 16px;
+    border: 2px solid #E8EAED;
+    width: 100%;
+    padding: 8px;
+    color: #718EBF;
+    background-color: #FFF;
+}
+
+.formGroup img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+}

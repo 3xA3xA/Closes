@@ -14,5 +14,19 @@ export const registerSchema = yup.object({
     .required('Подтвердите пароль'),
 });
 
+export const userUpdateSchema = yup.object({
+  name: yup.string().min(2, 'Минимум 2 символа').nullable(),
+  email: yup.string().email('Некорректный email').nullable(),
+  newPassword: yup
+    .string()
+    .min(6, 'Минимум 6 символов')
+    .nullable(),
+  oldPassword: yup
+    .string()
+    .min(6, 'Минимум 6 символов')
+    .nullable(),
+}).partial();
+
 export type LoginFormData = yup.InferType<typeof loginSchema>;
 export type RegisterFormData = yup.InferType<typeof registerSchema>;
+export type UserUpdateFormData = yup.InferType<typeof userUpdateSchema>;

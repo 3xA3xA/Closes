@@ -13,5 +13,8 @@ namespace Domain.DTOs
         /// </summary>
         [Required]
         public IFormFile Avatar { get; set; }
+
+        [Required]
+        public Guid Id { get; set; }
     }
 }

@@ -12,6 +12,7 @@ namespace Domain.DTOs
     /// </summary>
     public class UpdateUserAccountDto
     {
+        public Guid Id { get; set; }
         /// <summary>
         /// Новое имя пользователя. Если не задано, останется прежним.
         /// </summary>

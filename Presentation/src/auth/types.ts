@@ -3,6 +3,7 @@ export interface User {
   name: string;
   email: string;
   token: string;
+  avatarUrl: string
 }
 
 export interface AuthContextType {

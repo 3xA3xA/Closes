@@ -4,7 +4,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../../auth/AuthContext/AuthContext';
-import { loginSchema, type LoginFormData } from '../../../../auth/schemas';
+import { loginSchema, type LoginFormData } from '../../../../schemas';
 import styles from './LoginForm.module.css'
 
 export const LoginForm = () => {
@@ -22,7 +22,7 @@ export const LoginForm = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       await login(data);
-      navigate('/user_home_page');
+      navigate('/userAccount');
     } catch {
       setError('root', {
         type: 'manual',
