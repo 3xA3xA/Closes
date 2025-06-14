@@ -15,6 +15,17 @@ namespace API
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("ReactPolicy", policyBuilder =>
+                {
+                    policyBuilder
+                        .WithOrigins("http://localhost:5173") // домен вашего React-приложения
+                        .AllowAnyHeader()
+                        .AllowAnyMethod(); // разрешаем все методы (GET, POST, OPTIONS и т.д.)
+                });
+            });
+
             // Подключаем строку подключения к базе данных
             builder.Services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -71,6 +82,8 @@ namespace API
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Closes API v1");
                 });
             }
+
+            app.UseCors("ReactPolicy");
 
             app.UseHttpsRedirection();
 
