@@ -3,6 +3,7 @@ using Domain.DTOs;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace API.Controllers
@@ -22,15 +23,20 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Обновление данных аккаунта пользователя: изменение электронной почты, пароля и аватарки.
-        /// Для смены пароля необходимо предоставить старый пароль.
+        /// Обновляет данные аккаунта пользователя, включая возможность загрузки нового аватара.
+        /// Для смены пароля требуется указать старый пароль.
         /// </summary>
-        /// <param name="updateDto">DTO с новыми данными аккаунта.</param>
+        /// <param name="dto">Данные формы для обновления аккаунта.</param>
         /// <returns>Обновленные данные пользователя.</returns>
-        [HttpPut("update")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [HttpPut("updateAccount")]
+        [Consumes("multipart/form-data")]
+        [SwaggerOperation(
+            Summary = "Обновление аккаунта пользователя",
+            Description = "Обновляет данные аккаунта, такие как имя, email и пароль"
+        )]
+        [SwaggerResponse(200, "Данные аккаунта успешно обновлены", typeof(UpdateUserAccountDto))]
+        [SwaggerResponse(400, "Ошибка обновления аккаунта")]
+        [SwaggerResponse(401, "Пользователь не аутентифицирован")]
         public async Task<IActionResult> UpdateAccount([FromBody] UpdateUserAccountDto updateDto)
         {
             // Код получения идентификатора пользователя из claim "sub"
@@ -65,9 +71,13 @@ namespace API.Controllers
         /// <returns>Относительный путь к сохраненному файлу аватарки.</returns>
         [HttpPost("avatar")]
         [Consumes("multipart/form-data")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [SwaggerOperation(
+            Summary = "Обновление аватара пользователя",
+            Description = "Обновляет аватар пользователя"
+        )]
+        [SwaggerResponse(200, "Данные аккаунта успешно обновлены", typeof(UpdateUserAccountDto))]
+        [SwaggerResponse(400, "Ошибка обновления аккаунта")]
+        [SwaggerResponse(401, "Пользователь не аутентифицирован")]
         public async Task<IActionResult> UploadAvatar([FromForm] UploadAvatarDto uploadDto)
         {
             if (uploadDto == null || uploadDto.Avatar == null || uploadDto.Avatar.Length == 0)

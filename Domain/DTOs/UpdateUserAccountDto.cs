@@ -31,10 +31,5 @@ namespace Domain.DTOs
         /// Новый пароль пользователя.
         /// </summary>
         public string? NewPassword { get; set; }
-
-        /// <summary>
-        /// URL аватарки пользователя.
-        /// </summary>
-        public string? AvatarUrl { get; set; }
     }
 }

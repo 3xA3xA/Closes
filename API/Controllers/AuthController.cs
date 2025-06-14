@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers
 {
@@ -21,7 +22,18 @@ namespace API.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Регистрирует нового пользователя и выдает JWT токен.
+        /// </summary>
+        /// <param name="dto">Данные для регистрации: имя, email и пароль.</param>
+        /// <returns>Информация о пользователе и JWT токен.</returns>
         [HttpPost("register")]
+        [SwaggerOperation(
+            Summary = "Регистрация пользователя",
+            Description = "Регистрирует пользователя с указанными данными, создает учетную запись и возвращает JWT токен."
+        )]
+        [SwaggerResponse(200, "Пользователь успешно зарегистрирован", typeof(RegisterDto))]
+        [SwaggerResponse(400, "Ошибка в данных регистрации")]
         public async Task<IActionResult> Register([FromBody] RegisterDto dto)
         {
             try
@@ -38,7 +50,18 @@ namespace API.Controllers
         }
 
 
+        /// <summary>
+        /// Аутентифицирует пользователя и выдает JWT токен.
+        /// </summary>
+        /// <param name="dto">Данные для входа: email и пароль.</param>
+        /// <returns>Данные пользователя и JWT токен.</returns>
         [HttpPost("login")]
+        [SwaggerOperation(
+            Summary = "Аутентификация пользователя",
+            Description = "Принимает учетные данные и, если они корректны, возвращает JWT токен для доступа к защищенным ресурсам."
+        )]
+        [SwaggerResponse(200, "Пользователь успешно аутентифицирован", typeof(LoginDto))]
+        [SwaggerResponse(400, "Неверные учетные данные")]
         public async Task<IActionResult> Login([FromBody] LoginDto dto)
         {
             try

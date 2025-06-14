@@ -1,3 +1,4 @@
+using API.Middlewares;
 using Application.Interfaces;
 using Application.Services;
 using Infrastructure.Data;
@@ -40,7 +41,8 @@ namespace API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                c.EnableAnnotations();
+                c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "Closes API",
                     Version = "v1",
@@ -74,8 +76,6 @@ namespace API
 
             var app = builder.Build();
 
-            app.UseStaticFiles();
-
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -90,9 +90,10 @@ namespace API
             app.UseHttpsRedirection();
 
             // Обязательно подключаем аутентификацию и авторизацию
+            app.UseGlobalExceptionMiddleware();
+            app.UseStaticFiles();
             app.UseAuthentication();
             app.UseAuthorization();
-
             app.MapControllers();
 
             app.Run();

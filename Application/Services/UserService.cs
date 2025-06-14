@@ -80,10 +80,6 @@ namespace Application.Services
             if (!string.IsNullOrWhiteSpace(updateDto.Name))
                 user.Name = updateDto.Name;
 
-            // Обновление аватарки, если указано
-            if (!string.IsNullOrWhiteSpace(updateDto.AvatarUrl))
-                user.AvatarUrl = updateDto.AvatarUrl;
-
             await _dbContext.SaveChangesAsync();
             return user;
         }
