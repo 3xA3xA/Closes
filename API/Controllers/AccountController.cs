@@ -125,7 +125,8 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, "Произошла ошибка при загрузке файла");
+                // Временно возвращаем подробную информацию об исключении для отладки
+                return StatusCode(500, $"Произошла ошибка при загрузке файла: {ex.Message}");
             }
         }
     }
