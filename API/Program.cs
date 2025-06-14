@@ -1,3 +1,11 @@
+using Application.Interfaces;
+using Application.Services;
+using Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using System.Text;
 
 namespace API
 {
@@ -7,24 +15,68 @@ namespace API
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
+            // Подключаем строку подключения к базе данных
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+            // Регистрация сервисов приложения
+            builder.Services.AddScoped<IUserService, UserService>();
+
+            // Регистрируем контроллеры
             builder.Services.AddControllers();
-            // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+
+            // Регистрация Swagger для документации API
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "Closes API",
+                    Version = "v1",
+                    Description = "Документация к API мобильного веб-приложения."
+                });
+            });
+
+            // Настраиваем JWT-аутентификацию
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    // Получаем необходимые данные из конфигурации
+                    var jwtKey = builder.Configuration["Jwt:Key"];
+                    if (string.IsNullOrWhiteSpace(jwtKey))
+                    {
+                        throw new Exception("JWT Key не задан в конфигурации. Проверьте appsettings.json.");
+                    }
+
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                        ValidateAudience = true,
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+                        ClockSkew = TimeSpan.Zero  // Можно настроить, чтобы токен не имел дополнительного времени "отклонения"
+                    };
+                });
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Closes API v1");
+                });
             }
 
             app.UseHttpsRedirection();
 
+            // Обязательно подключаем аутентификацию и авторизацию
+            app.UseAuthentication();
             app.UseAuthorization();
-
 
             app.MapControllers();
 

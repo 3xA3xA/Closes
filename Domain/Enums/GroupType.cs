@@ -4,15 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Enum
+namespace Domain.Enums
 {
-    /// <summary>
-    /// Перечисление, описывающее тип группы.
-    /// </summary>
+    // Перечисления для типов групп, ролей, активности и статуса активности
     public enum GroupType
     {
-        Family,
         Couple,
+        Family,
         Friends
     }
 }
