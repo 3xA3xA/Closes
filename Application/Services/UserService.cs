@@ -56,29 +56,38 @@ namespace Application.Services
             if (user == null)
                 throw new Exception("Пользователь не найден.");
 
-            // Если обновляется email, проверяем уникальность
+            // Обновление email, если пришёл новый и он отличается от текущего
             if (!string.IsNullOrWhiteSpace(updateDto.Email) && updateDto.Email != user.Email)
             {
+                // Проверка уникальности email
                 bool exists = await _dbContext.Users.AnyAsync(u => u.Email == updateDto.Email && u.Id != userId);
                 if (exists)
                     throw new Exception("Пользователь с таким email уже существует.");
+
                 user.Email = updateDto.Email;
             }
 
-            // Если обновляется пароль, проверяем наличие старого пароля и его валидность
+            // Обновление имени, если пришло новое значение
+            if (!string.IsNullOrWhiteSpace(updateDto.Name) && updateDto.Name != user.Name)
+            {
+                user.Name = updateDto.Name;
+            }
+
+            // Обновление пароля, если пришёл новый пароль
             if (!string.IsNullOrEmpty(updateDto.NewPassword))
             {
+                // Необходимо, чтобы пришёл и старый пароль для проверки
                 if (string.IsNullOrEmpty(updateDto.OldPassword))
                     throw new Exception("Старый пароль обязателен для смены пароля.");
+
+                // Проверка корректности старого пароля
                 if (!BCrypt.Net.BCrypt.Verify(updateDto.OldPassword, user.PasswordHash))
                     throw new Exception("Неверный старый пароль.");
 
+                // Если новый пароль отличается, обновляем его
+                // (так как новый пароль в любом случае хешируется по новой, дополнительная проверка не обязательна)
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(updateDto.NewPassword);
             }
-
-            // Обновление имени, если указано
-            if (!string.IsNullOrWhiteSpace(updateDto.Name))
-                user.Name = updateDto.Name;
 
             await _dbContext.SaveChangesAsync();
             return user;
