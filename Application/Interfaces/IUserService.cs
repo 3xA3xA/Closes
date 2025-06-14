@@ -8,6 +8,8 @@ namespace Application.Interfaces
     {
         Task<User> RegisterAsync(RegisterDto registerDto);
         Task<User> AuthenticateAsync(LoginDto loginDto);
+        Task<User> UpdateAvatarAsync(Guid userId, string avatarRelativePath);
+
 
         /// <summary>
         /// Обновляет данные аккаунта пользователя.

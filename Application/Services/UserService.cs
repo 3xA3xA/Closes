@@ -87,5 +87,16 @@ namespace Application.Services
             await _dbContext.SaveChangesAsync();
             return user;
         }
+
+        public async Task<User> UpdateAvatarAsync(Guid userId, string avatarRelativePath)
+        {
+            var user = await _dbContext.Users.FindAsync(userId);
+            if (user == null)
+                throw new Exception("Пользователь не найден.");
+
+            user.AvatarUrl = avatarRelativePath;
+            await _dbContext.SaveChangesAsync();
+            return user;
+        }
     }
 }

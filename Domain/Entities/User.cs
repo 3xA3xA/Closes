@@ -7,7 +7,7 @@
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string PasswordHash { get; set; } = string.Empty;
-        public string AvatarUrl { get; set; } = string.Empty;
+        public string? AvatarUrl { get; set; }
 
         // Навигационные свойства
         public virtual ICollection<GroupMember> GroupMembers { get; set; } = new List<GroupMember>();
