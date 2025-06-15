@@ -1,4 +1,3 @@
-
 import { jwtDecode } from 'jwt-decode';
 import type { LoginCredentials, RegisterCredentials, User } from '../../auth/types';
 import api from '../interceptors';

@@ -1,0 +1,71 @@
+.root {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border-radius: 16px;
+    color: #000;
+    width: 100%;
+    padding: 8px 24px;
+}
+
+.title {
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 22px;
+}
+
+.groupsList {
+    margin-top: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.existedGroup {
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 14px;
+    border-radius: 20px;
+}
+
+.iconGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.icon {
+    width: 50px;
+}
+
+.infoDroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.listOfMembers {
+    display: flex;
+    gap: 2px;
+    line-height: 8px;
+}
+
+.family {
+    border-radius: 16px;
+    padding: 8px;
+    background-color: #34D399;
+}
+
+.pair {
+    border-radius: 16px;
+    padding: 8px;
+    background-color: #FBCFE8;
+}
+
+.friends {
+    border-radius: 16px;
+    padding: 8px;
+    background-color: #82A6DD;
+}

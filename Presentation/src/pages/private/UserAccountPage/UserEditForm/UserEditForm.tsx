@@ -94,6 +94,7 @@ export const UserEditForm = ({
         <button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Сохранение...' : 'Сохранить'}
         </button>
+        
         <button type="button" onClick={onClose}>
           Отмена
         </button>

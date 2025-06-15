@@ -1,5 +1,6 @@
 .root {
     min-height: 100vh;
+    overflow-y: auto;
     background: linear-gradient(
     135deg,
     #4ad89f 0%,    
@@ -30,12 +31,20 @@
 }
 
 .editingButton {
+    background: #FFF;
+    color: #34D399;
+    padding: 8px 16px;
+    border-radius: 16px;
+    cursor: pointer;
+    width: 100%;
     cursor: pointer;
 }
 
 .logout {
-    background: #e68989;
-    color: #000;
+    text-align: center;
+    width: 100%;
+    background: #FFF;
+    color: #EC4899;
     padding: 8px 16px;
     border-radius: 16px;
     cursor: pointer;

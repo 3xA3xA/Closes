@@ -27,6 +27,12 @@ export const userUpdateSchema = yup.object({
     .nullable(),
 }).partial();
 
+export const createGroupSchema = yup.object({
+  name: yup.string().min(2, 'Минимум 2 символа').required('Обязаетльное поле'),
+  type: yup.string().required('Обязательное поле')
+})
+
 export type LoginFormData = yup.InferType<typeof loginSchema>;
 export type RegisterFormData = yup.InferType<typeof registerSchema>;
 export type UserUpdateFormData = yup.InferType<typeof userUpdateSchema>;
+export type CreateGroupFormData = yup.InferType<typeof createGroupSchema>
