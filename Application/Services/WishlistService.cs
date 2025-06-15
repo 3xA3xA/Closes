@@ -99,7 +99,6 @@ namespace Application.Services
             var wishlistItem = new WishlistItem
             {
                 WishlistId = dto.WishlistId,
-                // Теперь используем GroupMemberId, а не UserId
                 GroupMemberId = dto.GroupMemberId,
                 Name = dto.Name,
                 Description = dto.Description,
@@ -114,6 +113,7 @@ namespace Application.Services
 
             return wishlistItem;
         }
+
 
 
         /// <summary>
