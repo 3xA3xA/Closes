@@ -44,7 +44,6 @@ namespace Infrastructure.Data
                 .HasForeignKey(m => m.GroupId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-
             // Уникальный индекс для User.Email
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.Email)
@@ -57,11 +56,11 @@ namespace Infrastructure.Data
                 .HasForeignKey(wi => wi.WishlistId)
                 .OnDelete(DeleteBehavior.NoAction);
 
-            // Если связь WishlistItem -> User (свойство OwnerId) также должна быть без каскадного удаления:
+            // Настройка связи WishlistItem -> GroupMember
             modelBuilder.Entity<WishlistItem>()
-                .HasOne(wi => wi.User)
-                .WithMany(u => u.CreatedWishlistItems)
-                .HasForeignKey(wi => wi.UserId)
+                .HasOne(wi => wi.GroupMember)
+                .WithMany(gm => gm.CreatedWishlistItems)
+                .HasForeignKey(wi => wi.GroupMemberId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

@@ -15,5 +15,7 @@ namespace Domain.Entities
         // Навигационные свойства
         public virtual User User { get; set; }
         public virtual Group Group { get; set; }
+        // Добавляем коллекцию созданных элементов вишлиста от данного участника
+        public virtual ICollection<WishlistItem> CreatedWishlistItems { get; set; } = new List<WishlistItem>();
     }
 }
