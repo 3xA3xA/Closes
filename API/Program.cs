@@ -34,6 +34,8 @@ namespace API
             // Регистрация сервисов приложения
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IGroupService, GroupService>();
+            builder.Services.AddScoped<IWishlistService, WishlistService>();
+
 
             // Регистрируем контроллеры
             builder.Services.AddControllers();
