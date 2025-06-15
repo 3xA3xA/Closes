@@ -7,8 +7,8 @@ export const QuizPage = () => {
         <div className={styles.root}>
             <Header />
 
-            <main>
-                
+            <main style={{color: '#000'}}>
+                Quiz Page
             </main>
 
             <NavBar />

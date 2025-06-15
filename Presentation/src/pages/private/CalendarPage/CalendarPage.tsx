@@ -7,7 +7,7 @@ export const CalendarPage = () => {
         <div className={styles.root}>
             <Header />
 
-            <main>
+            <main style={{color: '#000'}}>
                 Calendar Page
             </main>
 

@@ -7,8 +7,8 @@ export const GroupHomePage = () => {
         <div className={styles.root}>
             <Header />
 
-            <main>
-                
+            <main style={{color: '#000'}}>
+                Group Home Page
             </main>
 
             <NavBar />

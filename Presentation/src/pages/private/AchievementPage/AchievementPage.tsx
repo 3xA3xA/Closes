@@ -1,14 +1,14 @@
 import { Header } from '../../../components/semantic/Header/Header'
 import { NavBar } from '../../../components/semantic/NavBar/NavBar'
-import styles from './WishListPage.module.css'
+import styles from './AchievementPage.module.css'
 
-export const WishListPage = () => {
+export const AchievementPage = () => {
     return (
         <div className={styles.root}>
             <Header />
 
             <main style={{color: '#000'}}>
-                WishListPage
+                Achievement Page
             </main>
 
             <NavBar />
