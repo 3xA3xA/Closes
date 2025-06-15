@@ -1,0 +1,22 @@
+.root {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 30px;
+    height: 60px;
+    background-color: #34D399;
+}
+
+.iconGroup {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.icon {
+    width: 24px;
+}
+
+.userAccountLink {
+    width: 20px;
+}
