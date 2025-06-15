@@ -4,26 +4,42 @@ import ReactDOM from 'react-dom';
 import type { User } from "../../../../auth/types";
 import styles from './GroupCreateForm.module.css'
 import type { CreateGroupFormData } from "../../../../schemas";
+import { createGroup, type GroupInfo } from "../../../../api/GroupService/groupService";
 
 interface GroupModalFormProps {
     isOpen: boolean;
     onClose: () => void
-    user: User
+    user: User | null
 }
 
-const GroupModalForm: React.FC<GroupModalFormProps> = ({ isOpen, onClose, user}) => {
+export const GroupCreateForm: React.FC<GroupModalFormProps> = ({ isOpen, onClose, user}) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm<CreateGroupFormData>();
 
-  const handleFormSubmit = (data: CreateGroupFormData) => {
-   console.log(data, user);
-   onClose();
-  };
+  console.log('user')
 
   if (!isOpen) return null;
+
+  const onSubmit = async (data: CreateGroupFormData) => {
+      try {
+        const normalizedData: GroupInfo = {
+            name: data.name,
+            type: parseInt(data.type),
+            ownerId: user?.id ?? ''
+        }
+        console.log('normalizedData', normalizedData)
+        await createGroup(normalizedData)
+      } catch {
+        setError('root', {
+          type: 'manual',
+          message: 'Некорректно переданы параметры'
+        })
+      }
+    }
 
   return ReactDOM.createPortal(
     <div className={styles.modalOverlay}>
@@ -32,7 +48,7 @@ const GroupModalForm: React.FC<GroupModalFormProps> = ({ isOpen, onClose, user})
           ×
         </button>
         <h2>Создать новую группу</h2>
-        <form onSubmit={handleSubmit(handleFormSubmit)} noValidate>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <div className={styles.formGroup}>
             <label htmlFor="groupType">Тип группы*</label>
             <select
@@ -41,9 +57,9 @@ const GroupModalForm: React.FC<GroupModalFormProps> = ({ isOpen, onClose, user})
               className={errors.type ? styles.errorInput : ''}
             >
               <option value="">Выберите тип</option>
-              <option value="Семья">Семья</option>
-              <option value="Пара">Пара</option>
-              <option value="Друзья">Друзья</option>
+              <option value="0">Семья</option>
+              <option value="1">Пара</option>
+              <option value="2">Друзья</option>
             </select>
             {errors.type && (
               <span className={styles.errorMessage}>{errors.type.message}</span>
@@ -82,5 +98,3 @@ const GroupModalForm: React.FC<GroupModalFormProps> = ({ isOpen, onClose, user})
     document.getElementById('modal-root')!
   );
 };
-
-export default GroupModalForm;

@@ -32,7 +32,16 @@ export const createGroupSchema = yup.object({
   type: yup.string().required('Обязательное поле')
 })
 
+export const joinGroupSchema = yup.object({
+  code: yup
+    .string()
+    .required('Код группы обязателен')
+    .matches(/^[A-Z0-9]{5}$/, 'Код должен состоять из 5 символов (A-Z, 0-9)')
+    .transform(value => value.toUpperCase())
+})
+
 export type LoginFormData = yup.InferType<typeof loginSchema>;
 export type RegisterFormData = yup.InferType<typeof registerSchema>;
 export type UserUpdateFormData = yup.InferType<typeof userUpdateSchema>;
 export type CreateGroupFormData = yup.InferType<typeof createGroupSchema>
+export type JoinGroupFormData = yup.InferType<typeof joinGroupSchema>

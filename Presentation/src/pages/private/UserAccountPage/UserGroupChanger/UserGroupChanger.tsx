@@ -2,86 +2,121 @@ import styles from './UserGroupChanger.module.css'
 import { MdFamilyRestroom } from "react-icons/md";
 import { GiLovers } from "react-icons/gi";
 import { GiThreeFriends } from "react-icons/gi";
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
+import { GroupCreateForm } from '../GroupCreateForm/GroupCreateForm';
+import type { User } from '../../../../auth/types';
+import { getGroupsByUserId } from '../../../../api/GroupService/groupService';
+import type { Group } from '../types';
+import { useNavigate } from 'react-router-dom';
 
-export const UserGroupChanger = () => {
-    const groups =[
-        // {
-        //     type: 'Family',
-        //     name: 'Керчики',
-        //     members: ['Martin', 'Gloria', 'Gleb']
-        // },
-        // {
-        //     type: 'Pair',
-        //     name: 'Вавиловы',
-        //     members: ['Gloria', 'Gleb']
-        // },
-        // {
-        //     type: 'Friends',
-        //     name: 'SWAG',
-        //     members: ['Peter', 'Gloria', 'Gleb', 'Vasya']
-        // }
-    ]
+interface UserGroupChangerProps {
+    isModalOpen: boolean;
+    setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+    user: User | null;
+    selectedGroup: Group | null;
+    setSelectedGroup: Dispatch<SetStateAction<Group | null>>;
+}
+
+export const UserGroupChanger: React.FC<UserGroupChangerProps> = ({ isModalOpen, setIsModalOpen, user, selectedGroup, setSelectedGroup }) => {
+    const [groups, setGroups] = useState<Group[]>([]);
+    const [ loading, setLoading] = useState(true);
+    const [ error, setError] = useState<string | null>(null);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const fetchGroups = async () => {
+            try {
+                const userGroups = await getGroupsByUserId(user?.id ?? '');
+                setGroups(userGroups);
+            } catch (err) {
+                setError('Не удалось загрузить группы');
+                console.error('Ошибка при загрузке групп:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchGroups();
+    }, [user]);
+
+    useEffect(() => {
+        if (selectedGroup) {
+            navigate(`/groupHomePage/${selectedGroup.id}`);
+        }
+    }, [selectedGroup, navigate]);
 
     return (
-        <section className={styles.root}>
-            <p className={styles.title}>{groups.length ? 'Выберите группу' : 'Вы не присоединились ни к одной из групп'}</p>
+        <>
+            <section className={styles.root}>
+                <p className={styles.title}>{groups.length ? 'Выберите группу' : 'Вы не присоединились ни к одной из групп'}</p>
 
-            <ul className={styles.groupsList}>
-                {
-                    groups.length ? (
-                        groups.map((groupItem) => (
-                            <li
-                                className={styles.existedGroup} 
-                                style={{ 
-                                    backgroundColor: 
-                                        groupItem.type === 'Family' ? '#34D399' :
-                                        groupItem.type === 'Pair' ? '#FBCFE8' :
-                                        groupItem.type === 'Friends' ? '#82A6DD' : 
-                                        'transparent' // цвет по умолчанию, если тип не совпадает
-                            }}>
-                                <div className={styles.iconGroup}>
-                                    <div className={styles.icon}>
+                <ul className={styles.groupsList}>
+                    {
+                        groups.length ? (
+                            groups.map((groupItem) => (
+                                <li
+                                    onClick={() => {
+                                        setSelectedGroup(groupItem);
+                                    }}
+                                    className={styles.existedGroup} 
+                                    style={{ 
+                                        backgroundColor: 
+                                            groupItem.type === 0 ? '#34D399' :
+                                            groupItem.type === 1 ? '#FBCFE8' :
+                                            groupItem.type === 2 ? '#82A6DD' : 
+                                            'transparent' // цвет по умолчанию, если тип не совпадает
+                                }}>
+                                    <div className={styles.iconGroup}>
                                         {
-                                            groupItem.type === 'Family' ? <MdFamilyRestroom /> :
-                                            groupItem.type === 'Pair' ? <GiLovers /> :
-                                            groupItem.type === 'Friends' ? <GiThreeFriends /> : 
+                                            groupItem.type === 0 ? <MdFamilyRestroom className={styles.icon}/> :
+                                            groupItem.type === 1 ? <GiLovers  className={styles.icon}/> :
+                                            groupItem.type === 2 ? <GiThreeFriends  className={styles.icon}/> : 
                                             ''
                                         }
                                     </div>
+
+                                    <div className={styles.infoGroup}>
+                                        <p className={styles.name}>Название: {groupItem.name}</p>
                                     
-                                </div>
+                                        <div className={styles.headOfListMembers}>
+                                            Список участников:
+                                        </div>
 
-                                <div className={styles.infoGroup}>
-                                    <p className={styles.name}>Название: {groupItem.name}</p>
-                                
-                                    <div className={styles.headOfListMembers}>
-                                        Список участников:
-                                    </div>
-
-                                    <ul className={styles.listOfMembers}>
-                                        {groupItem.members.map((member) => (
-                                            <>
-                                                <li className={styles.member}>{member}</li>
-                                            </>
+                                        <ul className={styles.listOfMembers}>
+                                            {groupItem.members.map((member) => (
+                                                <>
+                                                    <li className={styles.member}>{member.userName}</li>
+                                                </>
+                                            ))}
                                             
-                                        ))}
+                                        </ul>
+                                    </div>
+                                    <p>
                                         
-                                    </ul>
-                                </div>
-                                <p>
-                                    
-                                </p>
-                            </li>
-                        ))
-                    ) : (
-                        <>
-                            <li className={styles.family}>
-                                Создать группу
-                            </li>
-                        </>
-                    )
-                }
-            </ul>
-        </section>
+                                    </p>
+                                </li>
+                            ))
+                        ) : (
+                            <>
+                                <li className={styles.family} onClick={() => {
+                                        setIsModalOpen(true)
+                                    }
+                                }>
+                                    Создать группу
+                                </li>
+                            </>
+                        )
+                    }
+                </ul>
+            </section>
+
+            <GroupCreateForm
+                user={user}
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
+        </>
     )
 }
+

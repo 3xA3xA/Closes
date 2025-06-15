@@ -5,8 +5,14 @@ import { Login } from './pages/public/LoginPage/Login'
 import { RootRedirect } from './components/RootRedirect/RootRedirect'
 import { Registration } from './pages/public/RegistrationPage/Registartion'
 import { UserAccountPage } from './pages/private/UserAccountPage/UserAccount'
+import { useState } from 'react'
+import { GroupHomePage } from './pages/private/GroupHomePage/GroupHomePage'
+import type { Group } from './pages/private/UserAccountPage/types'
 
 function App() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState<Group | null>(null)
+
   return (
     <BrowserRouter>
       <Routes>
@@ -18,7 +24,15 @@ function App() {
         </Route>
 
         <Route element={<ProtectedRoute />}>
-          <Route path="/userAccount" element={<UserAccountPage />} />
+          <Route path="/userAccount" element={
+            <UserAccountPage 
+              isModalOpen={isModalOpen}
+              selectedGroup={selectedGroup} 
+              setIsModalOpen={setIsModalOpen}
+              setSelectedGroup={setSelectedGroup}
+            />} 
+          />
+          <Route path="/groupHomePage/:groupId" element={<GroupHomePage />} />
         </Route>
 
         <Route path="*" element={<div>404 Not Found</div>} />

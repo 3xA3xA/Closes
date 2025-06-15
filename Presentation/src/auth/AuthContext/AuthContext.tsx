@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import type { AuthContextType, LoginCredentials, RegisterCredentials, User } from "../types";
 import { jwtDecode } from "jwt-decode";
-import { login as apiLogin, register as apiRegister, refreshToken } from "../../api/AuthService/authService";
+import { login as apiLogin, register as apiRegister } from "../../api/AuthService/authService";
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -37,45 +37,44 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, [])
   
   const logout = useCallback(() => {
-    console.log('aлибаба')
     localStorage.removeItem('accessToken');
     setUser(null);
   }, []);
 
   const checkAuth = useCallback(async () => {
-    const token = localStorage.getItem('accessToken');
+    // const token = localStorage.getItem('accessToken');
     
-    if (!token) {
-      logout();
-      return;
-    }
+    // if (!token) {
+    //   logout();
+    //   return;
+    // }
   
-    try {
-      if (checkTokenExpiration(token)) {
-        const userData = jwtDecode<User>(token);
+    // try {
+    //   if (checkTokenExpiration(token)) {
+    //     const userData = jwtDecode<User>(token);
         
-        if (!userData?.id) {
-          throw new Error('Invalid token payload');
-        }
+    //     if (!userData?.id) {
+    //       throw new Error('Invalid token payload');
+    //     }
         
-        setUser({ ...userData, token: token });
-        return;
-      }
+    //     setUser({ ...userData, token: token });
+    //     return;
+    //   }
       
-      const newToken = await refreshToken();
-      localStorage.setItem('accessToken', newToken);
+    //   const newToken = await refreshToken();
+    //   localStorage.setItem('accessToken', newToken);
       
-      const newUserData = jwtDecode<User>(newToken);
-      if (!newUserData?.id) {
-        throw new Error('Invalid refreshed token payload');
-      }
+    //   const newUserData = jwtDecode<User>(newToken);
+    //   if (!newUserData?.id) {
+    //     throw new Error('Invalid refreshed token payload');
+    //   }
       
-      setUser({ ...newUserData, token: newToken });
+    //   setUser({ ...newUserData, token: newToken });
       
-    } catch (error) {
-      console.error('Authentication check failed:', error);
-      logout();
-    }
+    // } catch (error) {
+    //   console.error('Authentication check failed:', error);
+    //   logout();
+    // }
   }, [checkTokenExpiration, logout]);
 
   useEffect(() => {
