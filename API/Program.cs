@@ -39,11 +39,7 @@ namespace API
 
 
             // Регистрируем контроллеры
-            builder.Services.AddControllers().AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-                options.JsonSerializerOptions.WriteIndented = true;
-            });
+            builder.Services.AddControllers();
 
             // Регистрация Swagger для документации API
             builder.Services.AddEndpointsApiExplorer();

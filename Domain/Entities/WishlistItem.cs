@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace Domain.Entities
 {
     // Элемент Wish List (пожелание)
     // Элемент Wish List (пожелание)
@@ -17,6 +19,7 @@
         public DateTime CreatedAt { get; set; }
 
         // Навигационные свойства
+        [JsonIgnore]
         public virtual Wishlist Wishlist { get; set; }
         // Вместо User теперь будет ссылка на участника группы
         public virtual GroupMember GroupMember { get; set; }

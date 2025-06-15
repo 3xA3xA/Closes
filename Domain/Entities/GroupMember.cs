@@ -1,4 +1,5 @@
 ﻿using Domain.Enums;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities
 {
@@ -16,6 +17,7 @@ namespace Domain.Entities
         public virtual User User { get; set; }
         public virtual Group Group { get; set; }
         // Добавляем коллекцию созданных элементов вишлиста от данного участника
+        [JsonIgnore]
         public virtual ICollection<WishlistItem> CreatedWishlistItems { get; set; } = new List<WishlistItem>();
     }
 }

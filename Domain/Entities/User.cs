@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace Domain.Entities
 {
     // Пользователь
     public class User
@@ -10,6 +12,7 @@
         public string? AvatarUrl { get; set; }
 
         // Навигационные свойства
+        [JsonIgnore]
         public virtual ICollection<GroupMember> GroupMembers { get; set; } = new List<GroupMember>();
         public virtual ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
         public virtual ICollection<WishlistItem> CreatedWishlistItems { get; set; } = new List<WishlistItem>();
