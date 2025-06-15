@@ -26,8 +26,8 @@ namespace Application.Services
 
         public async Task<Group> CreateGroupAsync(CreateGroupDto dto)
         {
-            // При создании группы владелец задается через поле OwnerId,
-            // тем самым пользователь становится owner, а не просто member.
+            // Создаем группу с указанными данными;
+            // владелец задается через поле OwnerId, но его запись в таблице GroupMembers нужно создать отдельно.
             var group = new Group
             {
                 Name = dto.Name,
@@ -39,47 +39,65 @@ namespace Application.Services
 
             _dbContext.Groups.Add(group);
             await _dbContext.SaveChangesAsync();
-            return group;
+
+            // Добавляем владельца группы в качестве участника с ролью Owner.
+            var ownerMember = new GroupMember
+            {
+                UserId = dto.OwnerId,
+                GroupId = group.Id,
+                JoinedAt = DateTime.UtcNow,
+                Role = GroupRole.Owner,  // Если у вас нет специального значения для владельца, можно использовать GroupRole.Member.
+                UniqueColor = GenerateRandomColor()
+            };
+
+            _dbContext.GroupMembers.Add(ownerMember);
+            await _dbContext.SaveChangesAsync();
+
+            // Возвращаем группу с подгруженными участниками.
+            return await _dbContext.Groups
+                .Include(g => g.Members)
+                    .ThenInclude(m => m.User)
+                .FirstOrDefaultAsync(g => g.Id == group.Id);
         }
 
         public async Task<Group> GetGroupByIdAsync(Guid groupId)
         {
             return await _dbContext.Groups
                 .Include(g => g.Members)
+                    .ThenInclude(m => m.User)
                 .FirstOrDefaultAsync(g => g.Id == groupId);
         }
 
         public async Task<Group> GetGroupByCodeAsync(string groupCode)
         {
-            // Ищем группу, у которой поле Code совпадает с переданным значением (без учета регистра можно добавить настройку, если требуется)
             return await _dbContext.Groups
                 .Include(g => g.Members)
+                .ThenInclude(m => m.User)
                 .FirstOrDefaultAsync(g => g.Code == groupCode);
         }
 
         public async Task<IEnumerable<Group>> GetGroupsByUserIdAsync(Guid userId)
         {
-            // Ищем группы, где пользователь является либо владельцем, либо участником
             return await _dbContext.Groups
                 .Include(g => g.Members)
+                    .ThenInclude(m => m.User)
                 .Where(g => g.OwnerId == userId || g.Members.Any(m => m.UserId == userId))
                 .ToListAsync();
         }
 
         public async Task<GroupMember> JoinGroupAsync(string groupCode, Guid userId)
         {
-            // Находим группу по уникальному коду
+            // Находим группу по уникальному коду.
             var group = await _dbContext.Groups
                 .Include(g => g.Members)
                 .FirstOrDefaultAsync(g => g.Code == groupCode);
             if (group == null)
                 throw new Exception("Группа не найдена.");
 
-            // Если пользователь уже является владельцем или участником, выдаем ошибку
+            // Если пользователь уже является владельцем или участником, выдаем ошибку.
             if (group.OwnerId == userId || group.Members.Any(m => m.UserId == userId))
                 throw new Exception("Пользователь уже состоит в группе.");
 
-            // Создаем запись участника группы
             var member = new GroupMember
             {
                 UserId = userId,
@@ -117,7 +135,7 @@ namespace Application.Services
         private string GenerateRandomCode(int length)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            // Для простоты используем System.Random; для продакшна можно рассмотреть более криптостойкий генератор
+            // Для простоты используем System.Random; для продакшна можно рассмотреть более криптостойкий генератор.
             var random = new Random();
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());

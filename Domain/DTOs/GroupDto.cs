@@ -17,5 +17,10 @@ namespace Domain.DTOs
         public GroupType Type { get; set; }
         public string Code { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+
+        /// <summary>
+        /// Список участников группы.
+        /// </summary>
+        public IEnumerable<GroupMemberDto> Members { get; set; } = new List<GroupMemberDto>();
     }
 }

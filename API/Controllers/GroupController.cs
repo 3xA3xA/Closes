@@ -22,13 +22,14 @@ namespace API.Controllers
 
         /// <summary>
         /// Создает новую группу.
+        /// При создании владелец автоматически добавляется как участник с ролью Owner.
         /// </summary>
         /// <param name="dto">Данные для создания группы.</param>
-        /// <returns>HTTP-ответ с DTO созданной группы.</returns>
+        /// <returns>HTTP-ответ с DTO созданной группы с участниками.</returns>
         [HttpPost]
         [SwaggerOperation(
             Summary = "Создание новой группы",
-            Description = "Принимает данные группы, валидирует их и создает новую группу. Возвращает созданный объект с уникальным идентификатором и сгенерированным кодом."
+            Description = "Принимает данные группы, создает новую группу и возвращает объект с уникальным кодом, включая список участников (владельца, добавленного автоматически)."
         )]
         [SwaggerResponse(201, "Группа успешно создана", typeof(GroupDto))]
         [SwaggerResponse(400, "Неверные входные данные")]
@@ -37,17 +38,7 @@ namespace API.Controllers
             try
             {
                 Group createdGroup = await _groupService.CreateGroupAsync(dto);
-
-                // Формируем DTO для ответа
-                var response = new GroupDto
-                {
-                    Id = createdGroup.Id,
-                    Name = createdGroup.Name,
-                    Type = createdGroup.Type,
-                    Code = createdGroup.Code,
-                    CreatedAt = createdGroup.CreatedAt
-                };
-
+                var response = MapToGroupDto(createdGroup);
                 return CreatedAtAction(nameof(GetGroupById), new { id = response.Id }, response);
             }
             catch (Exception ex)
@@ -57,20 +48,20 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Присоединяет текущего аутентифицированного пользователя к группе по её уникальному коду.
-        /// Создает запись GroupMember.
+        /// Присоединяет пользователя к группе по её уникальному коду.
+        /// Для участия пользователь передаётся как параметр userId.
         /// </summary>
         /// <param name="groupCode">Уникальный код группы.</param>
-        /// <returns>Данные созданного участника группы.</returns>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <returns>Данные о созданной записи GroupMember.</returns>
         [HttpPost("join/{groupCode}")]
         [SwaggerOperation(
             Summary = "Присоединение к группе по коду",
-            Description = "Присоединяет текущего аутентифицированного пользователя к группе, найденной по её уникальному коду, и создает запись GroupMember."
+            Description = "Присоединяет пользователя к группе, найденной по её уникальному коду, и создает запись GroupMember."
         )]
         [SwaggerResponse(200, "Пользователь успешно присоединился к группе", typeof(GroupMemberDto))]
         [SwaggerResponse(400, "Ошибка при присоединении к группе")]
-        [SwaggerResponse(401, "Пользователь не аутентифицирован")]
-        public async Task<IActionResult> JoinGroup([FromRoute] string groupCode, Guid userId)
+        public async Task<IActionResult> JoinGroup([FromRoute] string groupCode, [FromQuery] Guid userId)
         {
             try
             {
@@ -93,14 +84,14 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Получает группу по ее уникальному идентификатору.
+        /// Получает группу по её уникальному идентификатору, включая список участников.
         /// </summary>
         /// <param name="id">Уникальный идентификатор группы.</param>
-        /// <returns>Объект группы.</returns>
+        /// <returns>Объект группы с участниками.</returns>
         [HttpGet("{id:guid}")]
         [SwaggerOperation(
             Summary = "Получение группы по ID",
-            Description = "Возвращает данные группы по её уникальному идентификатору."
+            Description = "Возвращает данные группы по её уникальному идентификатору, включая список участников."
         )]
         [SwaggerResponse(200, "Группа успешно найдена", typeof(GroupDto))]
         [SwaggerResponse(404, "Группа не найдена")]
@@ -108,30 +99,21 @@ namespace API.Controllers
         {
             Group group = await _groupService.GetGroupByIdAsync(id);
             if (group == null)
-            {
                 return NotFound(new { message = "Группа не найдена" });
-            }
 
-            var response = new GroupDto
-            {
-                Id = group.Id,
-                Name = group.Name,
-                Type = group.Type,
-                Code = group.Code,
-                CreatedAt = group.CreatedAt
-            };
-            return Ok(response);
+            return Ok(MapToGroupDto(group));
         }
 
         /// <summary>
         /// Поиск группы по уникальному коду.
+        /// Возвращает объект группы с участниками.
         /// </summary>
         /// <param name="code">Уникальный код группы (например, 5-символьная строка).</param>
-        /// <returns>Объект группы, если группа найдена, иначе 404.</returns>
+        /// <returns>Объект группы с участниками.</returns>
         [HttpGet("code/{code}")]
         [SwaggerOperation(
             Summary = "Поиск группы по коду",
-            Description = "Находит группу по уникальному коду, который был сгенерирован при создании группы."
+            Description = "Находит группу по уникальному коду, сгенерированному при создании, и возвращает её данные с участниками."
         )]
         [SwaggerResponse(200, "Группа успешно найдена", typeof(GroupDto))]
         [SwaggerResponse(404, "Группа с указанным кодом не найдена")]
@@ -139,52 +121,55 @@ namespace API.Controllers
         {
             Group group = await _groupService.GetGroupByCodeAsync(code);
             if (group == null)
-            {
                 return NotFound(new { message = "Группа с указанным кодом не найдена" });
-            }
-            var response = new GroupDto
-            {
-                Id = group.Id,
-                Name = group.Name,
-                Type = group.Type,
-                Code = group.Code,
-                CreatedAt = group.CreatedAt
-            };
-
-            return Ok(response);
+            return Ok(MapToGroupDto(group));
         }
 
         /// <summary>
-        /// Получает все группы, в которых участвует заданный пользователь.
-        /// Пользователь может быть владельцем или участником группы.
+        /// Получает все группы, в которых участвует заданный пользователь, включая список участников каждой группы.
         /// </summary>
         /// <param name="userId">Уникальный идентификатор пользователя.</param>
-        /// <returns>Список найденных групп.</returns>
+        /// <returns>Список групп с участниками.</returns>
         [HttpGet("user/{userId:guid}")]
         [SwaggerOperation(
             Summary = "Получение групп пользователя",
-            Description = "Возвращает все группы, в которых пользователь является владельцем или участником."
+            Description = "Возвращает все группы, где пользователь является владельцем или участником, включая список участников каждой группы."
         )]
         [SwaggerResponse(200, "Список групп успешно получен", typeof(IEnumerable<GroupDto>))]
         [SwaggerResponse(404, "Группы для указанного пользователя не найдены")]
-        public async Task<IActionResult> GetGroupsByUserId([FromRoute] Guid userId)
+        public async Task<IActionResult> GetGroupsByUserId(Guid userId)
         {
             IEnumerable<Group> groups = await _groupService.GetGroupsByUserIdAsync(userId);
             if (groups == null || !groups.Any())
-            {
                 return NotFound(new { message = "Группы для указанного пользователя не найдены" });
-            }
 
-            var response = groups.Select(group => new GroupDto
+            var response = groups.Select(g => MapToGroupDto(g));
+            return Ok(response);
+        }
+
+        #region Mapping Helpers
+
+        private GroupDto MapToGroupDto(Group group)
+        {
+            return new GroupDto
             {
                 Id = group.Id,
                 Name = group.Name,
                 Type = group.Type,
                 Code = group.Code,
-                CreatedAt = group.CreatedAt
-            });
-
-            return Ok(response);
+                CreatedAt = group.CreatedAt,
+                Members = group.Members?.Select(m => new GroupMemberDto
+                {
+                    Id = m.Id,
+                    UserId = m.UserId,
+                    GroupId = m.GroupId,
+                    JoinedAt = m.JoinedAt,
+                    Role = m.Role,
+                    UniqueColor = m.UniqueColor
+                }).ToList() ?? new List<GroupMemberDto>()
+            };
         }
+
+        #endregion
     }
 }
