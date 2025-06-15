@@ -33,5 +33,13 @@ namespace Application.Interfaces
         /// <param name="groupCode">Уникальный код группы (например, 5-символьная строка).</param>
         /// <returns>Найденная группа или null, если группа не найдена.</returns>
         Task<Group> GetGroupByCodeAsync(string groupCode);
+
+        /// <summary>
+        /// Получает все группы, в которых участвует пользователь.
+        /// Пользователь может быть владельцем или участником.
+        /// </summary>
+        /// <param name="userId">Уникальный идентификатор пользователя.</param>
+        /// <returns>Список групп.</returns>
+        Task<IEnumerable<Group>> GetGroupsByUserIdAsync(Guid userId);
     }
 }

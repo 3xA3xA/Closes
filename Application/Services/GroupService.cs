@@ -59,6 +59,15 @@ namespace Application.Services
                 .FirstOrDefaultAsync(g => g.Code == groupCode);
         }
 
+        public async Task<IEnumerable<Group>> GetGroupsByUserIdAsync(Guid userId)
+        {
+            // Ищем группы, где пользователь является либо владельцем, либо участником
+            return await _dbContext.Groups
+                .Include(g => g.Members)
+                .Where(g => g.OwnerId == userId || g.Members.Any(m => m.UserId == userId))
+                .ToListAsync();
+        }
+
         /// <summary>
         /// Генерирует уникальный код группы из 5 символов.
         /// </summary>

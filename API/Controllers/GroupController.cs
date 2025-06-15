@@ -117,5 +117,38 @@ namespace API.Controllers
 
             return Ok(response);
         }
+
+        /// <summary>
+        /// Получает все группы, в которых участвует заданный пользователь.
+        /// Пользователь может быть владельцем или участником группы.
+        /// </summary>
+        /// <param name="userId">Уникальный идентификатор пользователя.</param>
+        /// <returns>Список найденных групп.</returns>
+        [HttpGet("user/{userId:guid}")]
+        [SwaggerOperation(
+            Summary = "Получение групп пользователя",
+            Description = "Возвращает все группы, в которых пользователь является владельцем или участником."
+        )]
+        [SwaggerResponse(200, "Список групп успешно получен", typeof(IEnumerable<GroupDto>))]
+        [SwaggerResponse(404, "Группы для указанного пользователя не найдены")]
+        public async Task<IActionResult> GetGroupsByUserId([FromRoute] Guid userId)
+        {
+            IEnumerable<Group> groups = await _groupService.GetGroupsByUserIdAsync(userId);
+            if (groups == null || !groups.Any())
+            {
+                return NotFound(new { message = "Группы для указанного пользователя не найдены" });
+            }
+
+            var response = groups.Select(group => new GroupDto
+            {
+                Id = group.Id,
+                Name = group.Name,
+                Type = group.Type,
+                Code = group.Code,
+                CreatedAt = group.CreatedAt
+            });
+
+            return Ok(response);
+        }
     }
 }
