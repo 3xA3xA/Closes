@@ -33,6 +33,7 @@ namespace API
 
             // Регистрация сервисов приложения
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IGroupService, GroupService>();
 
             // Регистрируем контроллеры
             builder.Services.AddControllers();
