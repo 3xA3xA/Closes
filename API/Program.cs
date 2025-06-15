@@ -21,9 +21,9 @@ namespace API
                 options.AddPolicy("ReactPolicy", policyBuilder =>
                 {
                     policyBuilder
-                        .WithOrigins("http://localhost:5173") // домен вашего React-приложения
+                        .WithOrigins("http://localhost:5173") 
                         .AllowAnyHeader()
-                        .AllowAnyMethod(); // разрешаем все методы (GET, POST, OPTIONS и т.д.)
+                        .AllowAnyMethod();
                 });
             });
 
