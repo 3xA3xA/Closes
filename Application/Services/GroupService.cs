@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces;
 using Domain.DTOs;
 using Domain.Entities;
+using Domain.Enums;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,17 +24,16 @@ namespace Application.Services
             _dbContext = dbContext;
         }
 
-        /// <inheritdoc />
         public async Task<Group> CreateGroupAsync(CreateGroupDto dto)
         {
-            // Создаем объект группы и заполняем поля
+            // При создании группы владелец задается через поле OwnerId,
+            // тем самым пользователь становится owner, а не просто member.
             var group = new Group
             {
                 Name = dto.Name,
                 Type = dto.Type,
                 OwnerId = dto.OwnerId,
                 CreatedAt = DateTime.UtcNow,
-                // Генерируем уникальный код из 5 символов
                 Code = await GenerateUniqueGroupCodeAsync()
             };
 
@@ -42,15 +42,13 @@ namespace Application.Services
             return group;
         }
 
-        /// <inheritdoc />
         public async Task<Group> GetGroupByIdAsync(Guid groupId)
         {
             return await _dbContext.Groups
-                .Include(g => g.Members)  // если нужно подтянуть участников
+                .Include(g => g.Members)
                 .FirstOrDefaultAsync(g => g.Id == groupId);
         }
 
-        /// <inheritdoc />
         public async Task<Group> GetGroupByCodeAsync(string groupCode)
         {
             // Ищем группу, у которой поле Code совпадает с переданным значением (без учета регистра можно добавить настройку, если требуется)
@@ -66,6 +64,34 @@ namespace Application.Services
                 .Include(g => g.Members)
                 .Where(g => g.OwnerId == userId || g.Members.Any(m => m.UserId == userId))
                 .ToListAsync();
+        }
+
+        public async Task<GroupMember> JoinGroupAsync(string groupCode, Guid userId)
+        {
+            // Находим группу по уникальному коду
+            var group = await _dbContext.Groups
+                .Include(g => g.Members)
+                .FirstOrDefaultAsync(g => g.Code == groupCode);
+            if (group == null)
+                throw new Exception("Группа не найдена.");
+
+            // Если пользователь уже является владельцем или участником, выдаем ошибку
+            if (group.OwnerId == userId || group.Members.Any(m => m.UserId == userId))
+                throw new Exception("Пользователь уже состоит в группе.");
+
+            // Создаем запись участника группы
+            var member = new GroupMember
+            {
+                UserId = userId,
+                GroupId = group.Id,
+                JoinedAt = DateTime.UtcNow,
+                Role = GroupRole.Member,
+                UniqueColor = GenerateRandomColor()
+            };
+
+            _dbContext.GroupMembers.Add(member);
+            await _dbContext.SaveChangesAsync();
+            return member;
         }
 
         /// <summary>
@@ -95,6 +121,16 @@ namespace Application.Services
             var random = new Random();
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        /// <summary>
+        /// Генерирует случайный HEX-цвет в формате "#RRGGBB".
+        /// </summary>
+        /// <returns>Строка с уникальным цветом.</returns>
+        private string GenerateRandomColor()
+        {
+            var random = new Random();
+            return $"#{random.Next(0x1000000):X6}";
         }
     }
 }

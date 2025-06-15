@@ -57,6 +57,42 @@ namespace API.Controllers
         }
 
         /// <summary>
+        /// Присоединяет текущего аутентифицированного пользователя к группе по её уникальному коду.
+        /// Создает запись GroupMember.
+        /// </summary>
+        /// <param name="groupCode">Уникальный код группы.</param>
+        /// <returns>Данные созданного участника группы.</returns>
+        [HttpPost("join/{groupCode}")]
+        [SwaggerOperation(
+            Summary = "Присоединение к группе по коду",
+            Description = "Присоединяет текущего аутентифицированного пользователя к группе, найденной по её уникальному коду, и создает запись GroupMember."
+        )]
+        [SwaggerResponse(200, "Пользователь успешно присоединился к группе", typeof(GroupMemberDto))]
+        [SwaggerResponse(400, "Ошибка при присоединении к группе")]
+        [SwaggerResponse(401, "Пользователь не аутентифицирован")]
+        public async Task<IActionResult> JoinGroup([FromRoute] string groupCode, Guid userId)
+        {
+            try
+            {
+                GroupMember member = await _groupService.JoinGroupAsync(groupCode, userId);
+                var response = new GroupMemberDto
+                {
+                    Id = member.Id,
+                    GroupId = member.GroupId,
+                    UserId = member.UserId,
+                    JoinedAt = member.JoinedAt,
+                    Role = member.Role,
+                    UniqueColor = member.UniqueColor
+                };
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Получает группу по ее уникальному идентификатору.
         /// </summary>
         /// <param name="id">Уникальный идентификатор группы.</param>

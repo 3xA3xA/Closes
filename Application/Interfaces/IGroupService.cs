@@ -41,5 +41,13 @@ namespace Application.Interfaces
         /// <param name="userId">Уникальный идентификатор пользователя.</param>
         /// <returns>Список групп.</returns>
         Task<IEnumerable<Group>> GetGroupsByUserIdAsync(Guid userId);
+
+        /// <summary>
+        /// Присоединяет пользователя к группе по уникальному коду.
+        /// </summary>
+        /// <param name="groupCode">Уникальный код группы, который генерируется при создании.</param>
+        /// <param name="userId">Идентификатор пользователя.</param>
+        /// <returns>Созданная запись GroupMember.</returns>
+        Task<GroupMember> JoinGroupAsync(string groupCode, Guid userId);
     }
 }
