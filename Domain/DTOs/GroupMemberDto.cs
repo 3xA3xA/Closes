@@ -18,5 +18,6 @@ namespace Domain.DTOs
         public DateTime JoinedAt { get; set; }
         public GroupRole Role { get; set; }
         public string UniqueColor { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
     }
 }

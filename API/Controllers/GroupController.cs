@@ -165,7 +165,8 @@ namespace API.Controllers
                     GroupId = m.GroupId,
                     JoinedAt = m.JoinedAt,
                     Role = m.Role,
-                    UniqueColor = m.UniqueColor
+                    UniqueColor = m.UniqueColor,
+                    UserName = m.User != null ? m.User.Name : string.Empty
                 }).ToList() ?? new List<GroupMemberDto>()
             };
         }
