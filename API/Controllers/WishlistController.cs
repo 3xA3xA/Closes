@@ -46,18 +46,18 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Получает вишлист по его Id, включая элементы.
+        /// Получает вишлист по его GroupId, включая элементы.
         /// </summary>
         [HttpGet("{id:guid}")]
         [SwaggerOperation(
-            Summary = "Получение вишлиста по Id",
+            Summary = "Получение вишлиста по GroupId",
             Description = "Возвращает данные вишлиста с его элементами."
         )]
         [SwaggerResponse(200, "Вишлист получен", typeof(Wishlist))]
         [SwaggerResponse(404, "Вишлист не найден")]
-        public async Task<IActionResult> GetWishlistById(Guid id)
+        public async Task<IActionResult> GetWishlistByGroupId(Guid id)
         {
-            var wishlist = await _wishlistService.GetWishlistByIdAsync(id);
+            var wishlist = await _wishlistService.GetWishlistsByGroupIdAsync(id);
             if (wishlist == null)
                 return NotFound(new { message = "Вишлист не найден." });
             return Ok(wishlist);
@@ -101,6 +101,13 @@ namespace API.Controllers
         {
             var items = await _wishlistService.GetWishlistItemsAsync(wishlistId, alternate);
             return Ok(items);
+        }
+        private async Task<IActionResult> GetWishlistById(Guid id)
+        {
+            var wishlist = await _wishlistService.GetWishlistByIdAsync(id);
+            if (wishlist == null)
+                return NotFound(new { message = "Вишлист не найден." });
+            return Ok(wishlist);
         }
     }
 }
