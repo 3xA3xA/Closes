@@ -49,5 +49,7 @@ namespace Application.Interfaces
         /// <param name="userId">Идентификатор пользователя.</param>
         /// <returns>Созданная запись GroupMember.</returns>
         Task<GroupMember> JoinGroupAsync(string groupCode, Guid userId);
+
+        Task<GroupMember> GetGroupMemberAsync(Guid userId, Guid groupId);
     }
 }

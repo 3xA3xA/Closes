@@ -9,6 +9,7 @@ namespace API.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
     using Application.Interfaces;
     using Domain.DTOs;
@@ -121,15 +122,15 @@ namespace API.Controllers
             /// <summary>
             /// Получает все элементы вишлиста.
             /// </summary>
-            [HttpGet("{wishlistId:guid}/items")]
+            [HttpGet("{groupId:guid}/items")]
             [SwaggerOperation(
                 Summary = "Получение элементов вишлиста",
                 Description = "Возвращает все элементы вишлиста."
             )]
             [SwaggerResponse(200, "Элементы получены", typeof(IEnumerable<WishlistItem>))]
-            public async Task<IActionResult> GetWishlistItems(Guid wishlistId)
+            public async Task<IActionResult> GetWishlistItems(Guid groupId)
             {
-                var items = await _wishlistService.GetWishlistItemsAsync(wishlistId);
+                var items = await _wishlistService.GetWishlistItemsAsync(groupId);
                 return Ok(items);
             }
         }

@@ -124,24 +124,35 @@ namespace Application.Services
         /// <summary>
         /// Получает все элементы вишлиста, упорядоченные по CreatedAt.
         /// </summary>
-        public async Task<IEnumerable<WishlistItemDto>> GetWishlistItemsAsync(Guid wishlistId)
+        public async Task<IEnumerable<WishlistItemDto>> GetWishlistItemsAsync(Guid groupId)
         {
+            // Получаем вишлист, принадлежащий группе
+            var wishlist = await _dbContext.Wishlists
+                .FirstOrDefaultAsync(w => w.GroupId == groupId);
+
+            // Если вишлист не найден, возвращаем пустой список или обрабатываем соответствующим образом
+            if (wishlist == null)
+            {
+                return new List<WishlistItemDto>();
+            }
+
+            // Выбираем товары вишлиста по его Id
             var items = await _dbContext.WishlistItems
-                .Where(i => i.WishlistId == wishlistId)
-                .OrderBy(i => i.CreatedAt)
-                .Select(i => new WishlistItemDto
-                {
-                    //Id = i.Id,
-                    //WishlistId = i.WishlistId,
-                    GroupMemberId = i.GroupMemberId,
-                    Name = i.Name,
-                    Description = i.Description,
-                    Priority = i.Priority,
-                    ImageUrl = i.ImageUrl,
-                    Completed = i.Completed,
-                    CreatedAt = i.CreatedAt
-                })
-                .ToListAsync();
+                 .Where(i => i.WishlistId == wishlist.Id)
+                 .OrderBy(i => i.CreatedAt)
+                 .Select(i => new WishlistItemDto
+                 {
+                     //Id = i.Id,
+                     //WishlistId = i.WishlistId,
+                     GroupMemberId = i.GroupMemberId,
+                     Name = i.Name,
+                     Description = i.Description,
+                     Priority = i.Priority,
+                     ImageUrl = i.ImageUrl,
+                     Completed = i.Completed,
+                     CreatedAt = i.CreatedAt
+                 })
+                 .ToListAsync();
 
             return items;
         }

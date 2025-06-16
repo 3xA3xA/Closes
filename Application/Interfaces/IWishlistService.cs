@@ -18,6 +18,6 @@ namespace Application.Interfaces
         Task<IEnumerable<Wishlist>> GetWishlistsByUserIdAsync(Guid userId);
         Task<IEnumerable<Wishlist>> GetWishlistsByGroupIdAsync(Guid groupId);
         Task<WishlistItem> AddWishlistItemAsync(CreateWishlistItemDto dto);
-        Task<IEnumerable<WishlistItemDto>> GetWishlistItemsAsync(Guid wishlistId);
+        Task<IEnumerable<WishlistItemDto>> GetWishlistItemsAsync(Guid groupId);
     }
 }

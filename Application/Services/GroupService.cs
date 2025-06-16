@@ -112,6 +112,19 @@ namespace Application.Services
             return member;
         }
 
+        public async Task<GroupMember> GetGroupMemberAsync(Guid userId, Guid groupId)
+        {
+            var member = await _dbContext.GroupMembers
+                .FirstOrDefaultAsync(m => m.UserId == userId && m.GroupId == groupId);
+
+            if (member == null)
+            {
+                throw new Exception("Пользователь не найден в указанной группе.");
+            }
+
+            return member;
+        }
+
         /// <summary>
         /// Генерирует уникальный код группы из 5 символов.
         /// </summary>

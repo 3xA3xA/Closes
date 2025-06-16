@@ -147,6 +147,27 @@ namespace API.Controllers
             return Ok(response);
         }
 
+        [HttpGet("member")]
+        [SwaggerOperation(
+    Summary = "Получение участника группы по userId и groupId",
+    Description = "Возвращает идентификатор участника (GroupMemberId) для заданных userId и groupId."
+)]
+        [SwaggerResponse(200, "Участник найден", typeof(Guid))]
+        [SwaggerResponse(404, "Участник не найден")]
+        public async Task<IActionResult> GetGroupMember([FromQuery] Guid userId, [FromQuery] Guid groupId)
+        {
+            // Вызываем метод сервиса, который возвращает Guid идентификатор участника группы.
+            GroupMember member = await _groupService.GetGroupMemberAsync(userId, groupId);
+
+            if (member.Id == Guid.Empty)
+            {
+                return NotFound(new { message = "Участник не найден." });
+            }
+
+            return Ok(member);
+        }
+
+
         #region Mapping Helpers
 
         private GroupDto MapToGroupDto(Group group)
