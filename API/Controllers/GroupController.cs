@@ -48,6 +48,32 @@ namespace API.Controllers
         }
 
         /// <summary>
+        /// Удаляет группу.
+        /// Удалить группу может только владелец.
+        /// </summary>
+        /// <param name="groupId">Идентификатор группы.</param>
+        /// <param name="userId">Идентификатор пользователя, пытающегося удалить группу.</param>
+        [HttpDelete("delete/{groupId:guid}")]
+        [SwaggerOperation(
+            Summary = "Удаление группы",
+            Description = "Удаляет группу, если вызывающий пользователь является владельцем."
+        )]
+        [SwaggerResponse(200, "Группа успешно удалена")]
+        [SwaggerResponse(400, "Ошибка при удалении группы")]
+        public async Task<IActionResult> DeleteGroup([FromRoute] Guid groupId, [FromQuery] Guid userId)
+        {
+            try
+            {
+                await _groupService.DeleteGroupAsync(groupId, userId);
+                return Ok(new { message = "Группа успешно удалена." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
         /// Присоединяет пользователя к группе по её уникальному коду.
         /// Для участия пользователь передаётся как параметр userId.
         /// </summary>
@@ -76,6 +102,32 @@ namespace API.Controllers
                     UniqueColor = member.UniqueColor
                 };
                 return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Позволяет пользователю выйти из группы.
+        /// Владелец группы не может покинуть группу.
+        /// </summary>
+        /// <param name="groupId">Идентификатор группы.</param>
+        /// <param name="userId">Идентификатор пользователя, который хочет выйти из группы.</param>
+        [HttpDelete("leave/{groupId:guid}")]
+        [SwaggerOperation(
+            Summary = "Выход из группы",
+            Description = "Позволяет пользователю выйти из группы, если он не является владельцем."
+        )]
+        [SwaggerResponse(200, "Пользователь успешно вышел из группы")]
+        [SwaggerResponse(400, "Ошибка при выходе из группы")]
+        public async Task<IActionResult> LeaveGroup([FromRoute] Guid groupId, [FromQuery] Guid userId)
+        {
+            try
+            {
+                await _groupService.LeaveGroupAsync(groupId, userId);
+                return Ok(new { message = "Вы успешно покинули группу." });
             }
             catch (Exception ex)
             {

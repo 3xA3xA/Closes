@@ -8,48 +8,15 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces
 {
-    /// <summary>
-    /// Интерфейс сервиса для работы с группами.
-    /// </summary>
     public interface IGroupService
     {
-        /// <summary>
-        /// Создает новую группу.
-        /// </summary>
-        /// <param name="dto">Данные для создания группы.</param>
-        /// <returns>Объект созданной группы.</returns>
         Task<Group> CreateGroupAsync(CreateGroupDto dto);
-
-        /// <summary>
-        /// Получает группу по её уникальному идентификатору.
-        /// </summary>
-        /// <param name="groupId">Уникальный идентификатор группы.</param>
-        /// <returns>Найденная группа или null, если группа не найдена.</returns>
+        Task DeleteGroupAsync(Guid groupId, Guid userId);
         Task<Group> GetGroupByIdAsync(Guid groupId);
-
-        /// <summary>
-        /// Получает группу по её уникальному коду.
-        /// </summary>
-        /// <param name="groupCode">Уникальный код группы (например, 5-символьная строка).</param>
-        /// <returns>Найденная группа или null, если группа не найдена.</returns>
         Task<Group> GetGroupByCodeAsync(string groupCode);
-
-        /// <summary>
-        /// Получает все группы, в которых участвует пользователь.
-        /// Пользователь может быть владельцем или участником.
-        /// </summary>
-        /// <param name="userId">Уникальный идентификатор пользователя.</param>
-        /// <returns>Список групп.</returns>
         Task<IEnumerable<Group>> GetGroupsByUserIdAsync(Guid userId);
-
-        /// <summary>
-        /// Присоединяет пользователя к группе по уникальному коду.
-        /// </summary>
-        /// <param name="groupCode">Уникальный код группы, который генерируется при создании.</param>
-        /// <param name="userId">Идентификатор пользователя.</param>
-        /// <returns>Созданная запись GroupMember.</returns>
         Task<GroupMember> JoinGroupAsync(string groupCode, Guid userId);
-
-        Task<GroupMember> GetGroupMemberAsync(Guid userId, Guid groupId);
+        Task LeaveGroupAsync(Guid groupId, Guid userId);
+        Task<GroupMember> GetGroupMemberAsync(Guid userId, Guid groupId);        
     }
 }

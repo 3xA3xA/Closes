@@ -60,6 +60,51 @@ namespace Application.Services
                 .FirstOrDefaultAsync(g => g.Id == group.Id);
         }
 
+        /// <summary>
+        /// Удаляет группу по её идентификатору.
+        /// Удалять группу может только её владелец.
+        /// </summary>
+        /// <param name="groupId">Идентификатор группы.</param>
+        /// <param name="userId">Идентификатор пользователя, пытающегося удалить группу.</param>
+        public async Task DeleteGroupAsync(Guid groupId, Guid userId)
+        {
+            // Получаем группу вместе с участниками.
+            var group = await _dbContext.Groups
+                .Include(g => g.Members)
+                .FirstOrDefaultAsync(g => g.Id == groupId);
+
+            if (group == null)
+            {
+                throw new Exception("Группа не найдена.");
+            }
+
+            // Проверяем, что пользователь является владельцем группы.
+            if (group.OwnerId != userId)
+            {
+                throw new Exception("Удалить группу может только владелец.");
+            }
+
+            // Получаем идентификаторы участников группы.
+            var memberIds = group.Members.Select(m => m.Id).ToList();
+
+            // Находим все товары вишлиста, принадлежащие этим участникам.
+            var wishlistItems = await _dbContext.WishlistItems
+                .Where(wi => memberIds.Contains(wi.GroupMemberId))
+                .ToListAsync();
+
+            // Удаляем товары вишлиста.
+            _dbContext.WishlistItems.RemoveRange(wishlistItems);
+
+            // Удаляем участников группы.
+            _dbContext.GroupMembers.RemoveRange(group.Members);
+
+            // Удаляем саму группу.
+            _dbContext.Groups.Remove(group);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+
         public async Task<Group> GetGroupByIdAsync(Guid groupId)
         {
             return await _dbContext.Groups
@@ -110,6 +155,34 @@ namespace Application.Services
             _dbContext.GroupMembers.Add(member);
             await _dbContext.SaveChangesAsync();
             return member;
+        }
+
+        /// <summary>
+        /// Позволяет пользователю выйти из группы.
+        /// Владелец группы не может покинуть её, его нужно либо удалить, либо передать владение.
+        /// </summary>
+        /// <param name="groupId">Идентификатор группы.</param>
+        /// <param name="userId">Идентификатор пользователя, который хочет покинуть группу.</param>
+        public async Task LeaveGroupAsync(Guid groupId, Guid userId)
+        {
+            // Находим запись участника в группе.
+            var member = await _dbContext.GroupMembers
+                .FirstOrDefaultAsync(m => m.GroupId == groupId && m.UserId == userId);
+
+            if (member == null)
+            {
+                throw new Exception("Вы не состоите в данной группе.");
+            }
+
+            // Проверяем, является ли пользователь владельцем.
+            var group = await _dbContext.Groups.FirstOrDefaultAsync(g => g.Id == groupId);
+            if (group.OwnerId == userId)
+            {
+                throw new Exception("Владелец группы не может покинуть группу. Удалите группу или передайте владение другому пользователю.");
+            }
+
+            _dbContext.GroupMembers.Remove(member);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<GroupMember> GetGroupMemberAsync(Guid userId, Guid groupId)

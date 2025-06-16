@@ -9,14 +9,6 @@ namespace Application.Interfaces
         Task<User> RegisterAsync(RegisterDto registerDto);
         Task<User> AuthenticateAsync(LoginDto loginDto);
         Task<User> UpdateAvatarAsync(System.Guid userId, string avatarRelativePath);
-
-
-        /// <summary>
-        /// Обновляет данные аккаунта пользователя.
-        /// </summary>
-        /// <param name="userId">Идентификатор пользователя.</param>
-        /// <param name="updateDto">DTO с новыми данными аккаунта.</param>
-        /// <returns>Обновленный объект пользователя.</returns>
         Task<User> UpdateAccountAsync(UpdateUserAccountDto updateDto);
     }
 }
