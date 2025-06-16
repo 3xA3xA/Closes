@@ -76,14 +76,13 @@ namespace Application.Services
         /// <summary>
         /// Получает вишлисты для указанной группы.
         /// </summary>
-        public async Task<IEnumerable<Wishlist>> GetWishlistsByGroupIdAsync(Guid groupId)
+        public async Task<Wishlist> GetWishlistByGroupIdAsync(Guid groupId)
         {
             return await _dbContext.Wishlists
                 .Include(w => w.Items)
                     .ThenInclude(i => i.GroupMember)
                         .ThenInclude(gm => gm.User)
-                .Where(w => w.GroupId == groupId)
-                .ToListAsync();
+                .FirstOrDefaultAsync(w => w.GroupId == groupId);
         }
 
         /// <summary>
@@ -142,11 +141,9 @@ namespace Application.Services
         /// </summary>
         public async Task<IEnumerable<WishlistItemDto>> GetWishlistItemsAsync(Guid groupId)
         {
-            // Получаем вишлист, принадлежащий группе
             var wishlist = await _dbContext.Wishlists
                 .FirstOrDefaultAsync(w => w.GroupId == groupId);
 
-            // Если вишлист не найден, возвращаем пустой список или обрабатываем соответствующим образом
             if (wishlist == null)
             {
                 return new List<WishlistItemDto>();

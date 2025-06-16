@@ -16,7 +16,7 @@ namespace Application.Interfaces
         Task<Wishlist> CreateWishlistAsync(CreateWishlistDto dto);
         Task<Wishlist> GetWishlistByIdAsync(Guid wishlistId);
         Task<IEnumerable<Wishlist>> GetWishlistsByUserIdAsync(Guid userId);
-        Task<IEnumerable<Wishlist>> GetWishlistsByGroupIdAsync(Guid groupId);
+        Task<Wishlist> GetWishlistByGroupIdAsync(Guid groupId);
         Task<WishlistItem> AddWishlistItemAsync(CreateWishlistItemDto dto);
         Task<IEnumerable<WishlistItemDto>> GetWishlistItemsAsync(Guid groupId);
         Task DeleteWishlistItemAsync(Guid wishlistItemId);
