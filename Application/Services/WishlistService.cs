@@ -119,7 +119,23 @@ namespace Application.Services
             return wishlistItem;
         }
 
+        /// <summary>
+        /// Удаляет товар из вишлиста по его идентификатору.
+        /// </summary>
+        /// <param name="wishlistItemId">Уникальный идентификатор товара вишлиста, который необходимо удалить.</param>
+        /// <returns>Асинхронная задача.</returns>
+        public async Task DeleteWishlistItemAsync(Guid wishlistItemId)
+        {
+            // Находим элемент вишлиста по его Id
+            var item = await _dbContext.WishlistItems.FindAsync(wishlistItemId);
+            if (item == null)
+            {
+                throw new Exception("Элемент вишлиста не найден.");
+            }
 
+            _dbContext.WishlistItems.Remove(item);
+            await _dbContext.SaveChangesAsync();
+        }
 
         /// <summary>
         /// Получает все элементы вишлиста, упорядоченные по CreatedAt.
@@ -142,7 +158,7 @@ namespace Application.Services
                  .OrderBy(i => i.CreatedAt)
                  .Select(i => new WishlistItemDto
                  {
-                     //Id = i.Id,
+                     WishlistItemId = i.Id,
                      //WishlistId = i.WishlistId,
                      GroupMemberId = i.GroupMemberId,
                      Name = i.Name,

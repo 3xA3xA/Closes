@@ -120,6 +120,29 @@ namespace API.Controllers
             }
 
             /// <summary>
+            /// Удаляет элемент вишлиста по его уникальному идентификатору.
+            /// </summary>
+            [HttpDelete("item/{wishlistItemId:guid}")]
+            [SwaggerOperation(
+                Summary = "Удаление элемента вишлиста",
+                Description = "Удаляет элемент вишлиста по его уникальному идентификатору."
+            )]
+            [SwaggerResponse(200, "Элемент успешно удален")]
+            [SwaggerResponse(404, "Элемент не найден")]
+            public async Task<IActionResult> DeleteWishlistItem(Guid wishlistItemId)
+            {
+                try
+                {
+                    await _wishlistService.DeleteWishlistItemAsync(wishlistItemId);
+                    return Ok(new { message = "Элемент вишлиста успешно удален." });
+                }
+                catch (Exception ex)
+                {
+                    return NotFound(new { message = ex.Message });
+                }
+            }
+
+            /// <summary>
             /// Получает все элементы вишлиста.
             /// </summary>
             [HttpGet("{groupId:guid}/items")]

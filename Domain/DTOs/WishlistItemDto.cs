@@ -8,7 +8,7 @@ namespace Domain.DTOs
 {
     public class WishlistItemDto
     {
-        //public Guid Id { get; set; }
+        public Guid WishlistItemId { get; set; }
         //public Guid WishlistId { get; set; }
         public Guid GroupMemberId { get; set; }
         public string Name { get; set; } = string.Empty;
