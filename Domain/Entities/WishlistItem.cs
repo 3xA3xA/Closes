@@ -2,8 +2,6 @@
 
 namespace Domain.Entities
 {
-    // Элемент Wish List (пожелание)
-    // Элемент Wish List (пожелание)
     public class WishlistItem
     {
         public Guid Id { get; set; } = Guid.NewGuid();

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,7 +49,7 @@ namespace Infrastructure.Migrations
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    AvatarUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -158,20 +158,26 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GroupId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Wishlists", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_Wishlists_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_Wishlists_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -231,17 +237,23 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     WishlistId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    GroupMemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Priority = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Completed = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_WishlistItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_WishlistItems_GroupMembers_GroupMemberId",
+                        column: x => x.GroupMemberId,
+                        principalTable: "GroupMembers",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_WishlistItems_Users_UserId",
                         column: x => x.UserId,
@@ -317,6 +329,11 @@ namespace Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_WishlistItems_GroupMemberId",
+                table: "WishlistItems",
+                column: "GroupMemberId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_WishlistItems_UserId",
                 table: "WishlistItems",
                 column: "UserId");
@@ -325,6 +342,11 @@ namespace Infrastructure.Migrations
                 name: "IX_WishlistItems_WishlistId",
                 table: "WishlistItems",
                 column: "WishlistId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Wishlists_GroupId",
+                table: "Wishlists",
+                column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Wishlists_UserId",
@@ -337,9 +359,6 @@ namespace Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "ActivityMembers");
-
-            migrationBuilder.DropTable(
-                name: "GroupMembers");
 
             migrationBuilder.DropTable(
                 name: "QuizAnswers");
@@ -357,13 +376,16 @@ namespace Infrastructure.Migrations
                 name: "QuizItems");
 
             migrationBuilder.DropTable(
+                name: "GroupMembers");
+
+            migrationBuilder.DropTable(
                 name: "Wishlists");
 
             migrationBuilder.DropTable(
-                name: "Groups");
+                name: "Quizzes");
 
             migrationBuilder.DropTable(
-                name: "Quizzes");
+                name: "Groups");
 
             migrationBuilder.DropTable(
                 name: "Users");

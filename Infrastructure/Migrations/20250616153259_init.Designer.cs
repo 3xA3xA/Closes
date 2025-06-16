@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250614115134_Initial")]
-    partial class Initial
+    [Migration("20250616153259_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Model.Activity", b =>
+            modelBuilder.Entity("Domain.Entities.Activity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -61,7 +61,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Activities");
                 });
 
-            modelBuilder.Entity("Domain.Model.ActivityMember", b =>
+            modelBuilder.Entity("Domain.Entities.ActivityMember", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -82,7 +82,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("ActivityMembers");
                 });
 
-            modelBuilder.Entity("Domain.Model.Group", b =>
+            modelBuilder.Entity("Domain.Entities.Group", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -113,7 +113,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("Domain.Model.GroupMember", b =>
+            modelBuilder.Entity("Domain.Entities.GroupMember", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -144,7 +144,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("GroupMembers");
                 });
 
-            modelBuilder.Entity("Domain.Model.Quiz", b =>
+            modelBuilder.Entity("Domain.Entities.Quiz", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -166,7 +166,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Quizzes");
                 });
 
-            modelBuilder.Entity("Domain.Model.QuizAnswer", b =>
+            modelBuilder.Entity("Domain.Entities.QuizAnswer", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -191,7 +191,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("QuizAnswers");
                 });
 
-            modelBuilder.Entity("Domain.Model.QuizItem", b =>
+            modelBuilder.Entity("Domain.Entities.QuizItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -211,7 +211,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("QuizItems");
                 });
 
-            modelBuilder.Entity("Domain.Model.QuizResult", b =>
+            modelBuilder.Entity("Domain.Entities.QuizResult", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -238,14 +238,13 @@ namespace Infrastructure.Migrations
                     b.ToTable("QuizResults");
                 });
 
-            modelBuilder.Entity("Domain.Model.User", b =>
+            modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("AvatarUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -268,7 +267,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Domain.Model.Wishlist", b =>
+            modelBuilder.Entity("Domain.Entities.Wishlist", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -277,6 +276,9 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -284,17 +286,19 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Wishlists");
                 });
 
-            modelBuilder.Entity("Domain.Model.WishlistItem", b =>
+            modelBuilder.Entity("Domain.Entities.WishlistItem", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -310,6 +314,9 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("GroupMemberId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("ImageUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -322,13 +329,15 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("WishlistId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupMemberId");
 
                     b.HasIndex("UserId");
 
@@ -337,9 +346,9 @@ namespace Infrastructure.Migrations
                     b.ToTable("WishlistItems");
                 });
 
-            modelBuilder.Entity("Domain.Model.Activity", b =>
+            modelBuilder.Entity("Domain.Entities.Activity", b =>
                 {
-                    b.HasOne("Domain.Model.Group", "Group")
+                    b.HasOne("Domain.Entities.Group", "Group")
                         .WithMany("Activities")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -348,15 +357,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("Domain.Model.ActivityMember", b =>
+            modelBuilder.Entity("Domain.Entities.ActivityMember", b =>
                 {
-                    b.HasOne("Domain.Model.Activity", "Activity")
+                    b.HasOne("Domain.Entities.Activity", "Activity")
                         .WithMany("Participants")
                         .HasForeignKey("ActivityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Model.User", "User")
+                    b.HasOne("Domain.Entities.User", "User")
                         .WithMany("ActivityMembers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -367,15 +376,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Model.GroupMember", b =>
+            modelBuilder.Entity("Domain.Entities.GroupMember", b =>
                 {
-                    b.HasOne("Domain.Model.Group", "Group")
+                    b.HasOne("Domain.Entities.Group", "Group")
                         .WithMany("Members")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Domain.Model.User", "User")
+                    b.HasOne("Domain.Entities.User", "User")
                         .WithMany("GroupMembers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -386,15 +395,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Model.QuizAnswer", b =>
+            modelBuilder.Entity("Domain.Entities.QuizAnswer", b =>
                 {
-                    b.HasOne("Domain.Model.QuizItem", "QuizItem")
+                    b.HasOne("Domain.Entities.QuizItem", "QuizItem")
                         .WithMany("QuizAnswers")
                         .HasForeignKey("QuizItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Model.User", "User")
+                    b.HasOne("Domain.Entities.User", "User")
                         .WithMany("QuizAnswers")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -405,9 +414,9 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Model.QuizItem", b =>
+            modelBuilder.Entity("Domain.Entities.QuizItem", b =>
                 {
-                    b.HasOne("Domain.Model.Quiz", "Quiz")
+                    b.HasOne("Domain.Entities.Quiz", "Quiz")
                         .WithMany("QuizItems")
                         .HasForeignKey("QuizId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -416,15 +425,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("Quiz");
                 });
 
-            modelBuilder.Entity("Domain.Model.QuizResult", b =>
+            modelBuilder.Entity("Domain.Entities.QuizResult", b =>
                 {
-                    b.HasOne("Domain.Model.Quiz", "Quiz")
+                    b.HasOne("Domain.Entities.Quiz", "Quiz")
                         .WithMany("QuizResults")
                         .HasForeignKey("QuizId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Model.User", "User")
+                    b.HasOne("Domain.Entities.User", "User")
                         .WithMany("QuizResults")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -435,61 +444,74 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Model.Wishlist", b =>
+            modelBuilder.Entity("Domain.Entities.Wishlist", b =>
                 {
-                    b.HasOne("Domain.Model.User", "User")
-                        .WithMany("Wishlists")
-                        .HasForeignKey("UserId")
+                    b.HasOne("Domain.Entities.Group", "Group")
+                        .WithMany()
+                        .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.HasOne("Domain.Entities.User", null)
+                        .WithMany("Wishlists")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("Domain.Model.WishlistItem", b =>
+            modelBuilder.Entity("Domain.Entities.WishlistItem", b =>
                 {
-                    b.HasOne("Domain.Model.User", "User")
+                    b.HasOne("Domain.Entities.GroupMember", "GroupMember")
                         .WithMany("CreatedWishlistItems")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("GroupMemberId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("Domain.Model.Wishlist", "Wishlist")
+                    b.HasOne("Domain.Entities.User", null)
+                        .WithMany("CreatedWishlistItems")
+                        .HasForeignKey("UserId");
+
+                    b.HasOne("Domain.Entities.Wishlist", "Wishlist")
                         .WithMany("Items")
                         .HasForeignKey("WishlistId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("GroupMember");
 
                     b.Navigation("Wishlist");
                 });
 
-            modelBuilder.Entity("Domain.Model.Activity", b =>
+            modelBuilder.Entity("Domain.Entities.Activity", b =>
                 {
                     b.Navigation("Participants");
                 });
 
-            modelBuilder.Entity("Domain.Model.Group", b =>
+            modelBuilder.Entity("Domain.Entities.Group", b =>
                 {
                     b.Navigation("Activities");
 
                     b.Navigation("Members");
                 });
 
-            modelBuilder.Entity("Domain.Model.Quiz", b =>
+            modelBuilder.Entity("Domain.Entities.GroupMember", b =>
+                {
+                    b.Navigation("CreatedWishlistItems");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Quiz", b =>
                 {
                     b.Navigation("QuizItems");
 
                     b.Navigation("QuizResults");
                 });
 
-            modelBuilder.Entity("Domain.Model.QuizItem", b =>
+            modelBuilder.Entity("Domain.Entities.QuizItem", b =>
                 {
                     b.Navigation("QuizAnswers");
                 });
 
-            modelBuilder.Entity("Domain.Model.User", b =>
+            modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Navigation("ActivityMembers");
 
@@ -504,7 +526,7 @@ namespace Infrastructure.Migrations
                     b.Navigation("Wishlists");
                 });
 
-            modelBuilder.Entity("Domain.Model.Wishlist", b =>
+            modelBuilder.Entity("Domain.Entities.Wishlist", b =>
                 {
                     b.Navigation("Items");
                 });

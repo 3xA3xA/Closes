@@ -96,6 +96,11 @@ namespace Application.Services
             if (wishlist == null)
                 throw new Exception("Вишлист не найден.");
 
+            // Проверка существования участника группы
+            var groupMember = await _dbContext.GroupMembers.FindAsync(dto.GroupMemberId);
+            if (groupMember == null)
+                throw new Exception("Участник группы не найден.");
+
             var wishlistItem = new WishlistItem
             {
                 WishlistId = dto.WishlistId,
@@ -118,41 +123,27 @@ namespace Application.Services
 
         /// <summary>
         /// Получает все элементы вишлиста, упорядоченные по CreatedAt.
-        /// Если alternate=true, элементы возвращаются в порядке round-robin (чередуются элементы, добавленные разными пользователями).
         /// </summary>
-        public async Task<IEnumerable<WishlistItem>> GetWishlistItemsAsync(Guid wishlistId, bool alternate = false)
+        public async Task<IEnumerable<WishlistItemDto>> GetWishlistItemsAsync(Guid wishlistId)
         {
-            // Подгружаем список с навигационными свойствами:
             var items = await _dbContext.WishlistItems
-                .Include(i => i.GroupMember)
-                    .ThenInclude(gm => gm.User)
                 .Where(i => i.WishlistId == wishlistId)
                 .OrderBy(i => i.CreatedAt)
+                .Select(i => new WishlistItemDto
+                {
+                    //Id = i.Id,
+                    //WishlistId = i.WishlistId,
+                    GroupMemberId = i.GroupMemberId,
+                    Name = i.Name,
+                    Description = i.Description,
+                    Priority = i.Priority,
+                    ImageUrl = i.ImageUrl,
+                    Completed = i.Completed,
+                    CreatedAt = i.CreatedAt
+                })
                 .ToListAsync();
 
-            if (!alternate)
-                return items;
-
-            // Реализуем round-robin: группируем элементы по GroupMemberId (т.е. по участнику группы)
-            var grouped = items.GroupBy(i => i.GroupMemberId);
-            var queues = grouped.ToDictionary(g => g.Key, g => new Queue<WishlistItem>(g.OrderBy(i => i.CreatedAt)));
-
-            var result = new List<WishlistItem>();
-            bool anyRemaining = true;
-            while (anyRemaining)
-            {
-                anyRemaining = false;
-                foreach (var queue in queues.Values)
-                {
-                    if (queue.Count > 0)
-                    {
-                        result.Add(queue.Dequeue());
-                        anyRemaining = true;
-                    }
-                }
-            }
-
-            return result;
+            return items;
         }
     }
 }

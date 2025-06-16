@@ -120,17 +120,16 @@ namespace API.Controllers
 
             /// <summary>
             /// Получает все элементы вишлиста.
-            /// Если alternate = true, элементы возвращаются по принципу round-robin, чередуя предметы между участниками.
             /// </summary>
             [HttpGet("{wishlistId:guid}/items")]
             [SwaggerOperation(
                 Summary = "Получение элементов вишлиста",
-                Description = "Возвращает все элементы вишлиста, опционально в чередующем порядке (round-robin) по разным участникам."
+                Description = "Возвращает все элементы вишлиста."
             )]
             [SwaggerResponse(200, "Элементы получены", typeof(IEnumerable<WishlistItem>))]
-            public async Task<IActionResult> GetWishlistItems(Guid wishlistId, [FromQuery] bool alternate = false)
+            public async Task<IActionResult> GetWishlistItems(Guid wishlistId)
             {
-                var items = await _wishlistService.GetWishlistItemsAsync(wishlistId, alternate);
+                var items = await _wishlistService.GetWishlistItemsAsync(wishlistId);
                 return Ok(items);
             }
         }
