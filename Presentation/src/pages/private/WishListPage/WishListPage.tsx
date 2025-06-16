@@ -1,8 +1,9 @@
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
+import { GrCheckmark } from "react-icons/gr";
 import { Header } from '../../../components/semantic/Header/Header'
 import { NavBar } from '../../../components/semantic/NavBar/NavBar'
 import styles from './WishListPage.module.css'
-import { getWishList } from '../../../api/WishlistService/wishListService'
+import { deleteWish, getWishList } from '../../../api/WishlistService/wishListService'
 import { useParams } from 'react-router-dom'
 import type { WishList } from './types'
 import { WishCreateForm } from './WishCreateForm/WishCreateForm'
@@ -54,8 +55,20 @@ export const WishListPage: React.FC<WishListPageProps> = ({ isModalOpen, setIsMo
                     {
                         typeof wishlist?.items !== "undefined" && wishlist.items.length > 0 ? (
                             wishlist.items.map((present) => (
-                                <li>
-                                    {present.name}
+                                <li className={styles.wish} style={{border: `2px solid ${present.groupMember.uniqueColor}`}}>
+                                    <div className={styles.image} />
+
+                                    <div className={styles.info}>
+                                        <div>Название: {present.name}</div>
+                                        <div className={styles.subtext}>Описание: {present.description}</div>
+                                        <div className={styles.subtext}>Кто хочет: {present.groupMember.user.name}</div>
+                                    </div>
+
+                                    {present.groupMemberId === member?.id && 
+                                        <GrCheckmark 
+                                            className={styles.checkMark}
+                                            onClick={() => deleteWish(present.id)}
+                                        />}
                                 </li>
                             ))
                         ) : (

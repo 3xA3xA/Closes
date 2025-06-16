@@ -20,6 +20,11 @@ export const getGroupsByUserId = async (userId: string) => {
   return response.data
 }
 
+export const getGroupById = async (groupId: string) => {
+  const response = await api.get(`${API_URL}/${groupId}`);
+  return response.data
+}
+
 export const joinToGroupByCode = async (code: string, userId: string) => {
   const response = await api.post(`${API_URL}/join/${code}?userId=${userId}`);
   console.log('join data', response.data);

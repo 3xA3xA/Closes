@@ -10,6 +10,42 @@
     width: 100%;
 }
 
+.wish {
+    padding: 16px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border-radius: 16px;
+}
+
+.image {
+    height: 64px;
+    width: 64px;
+    border-radius: 24px;
+    background-color: #D1D5DB;
+}
+
+.info {
+    max-width: 175px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: #000;
+}
+
+.subtext {
+    line-height: 16px;
+    font-size: 12px;
+    color: #D1D5DB;
+}
+
+.checkMark {
+    width: 25px;
+    margin-left: 20px;
+}
+
 .createButton {
     display: flex;
     justify-content: center;

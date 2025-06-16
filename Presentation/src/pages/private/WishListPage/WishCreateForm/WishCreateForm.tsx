@@ -119,7 +119,7 @@ export const WishCreateForm: React.FC<WishCreateFormProps> = ({ isOpen, memberId
           </div>
 
           <button type="submit" className={styles.submitButton}>
-            Создать группу
+            Создать желание
           </button>
         </form>
       </div>

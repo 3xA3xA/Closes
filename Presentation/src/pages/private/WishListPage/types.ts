@@ -1,3 +1,5 @@
+import type { Member } from "../UserAccountPage/types"
+
 export interface WishList {
     id: string,
     groupId: string,
@@ -9,8 +11,10 @@ export interface WishList {
 }
 
 export interface WishListItem {
+  id: string,
   wishlistId: string,
   groupMemberId: string,
+  groupMember: Member,
   name: string,
   description: string,
   priority: string,

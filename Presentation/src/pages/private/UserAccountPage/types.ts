@@ -8,6 +8,7 @@ export interface EditedUser extends Pick<User, 'id' | 'token'> {
 export interface Member {
     id: string,
     userId: string,
+    user: User,
     groupId: string,
     joinedAt: string,
     role: number,

@@ -25,3 +25,8 @@ export const addNewWish = async (params: AddNewWishParams) => {
   const response = await api.post(`${API_URL}/item`, params);
   return response.data
 }
+
+export const deleteWish = async (wishListItemId: string) => {
+  const response = await api.delete(`${API_URL}/item/${wishListItemId}`);
+  return response.data
+}
