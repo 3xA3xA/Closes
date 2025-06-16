@@ -40,7 +40,12 @@ function App() {
           <Route path="/groupQuizPage/:groupId" element={<QuizPage />} />
           <Route path="/groupCalendarPage/:groupId" element={<CalendarPage />} />
           <Route path="/groupAchievementPage/:groupId" element={<AchievementPage />} />
-          <Route path="/groupWishListPage/:groupId" element={<WishListPage />} />
+          <Route path="/groupWishListPage/:groupId" element={
+            <WishListPage 
+              isModalOpen={isModalOpen}
+              setIsModalOpen={setIsModalOpen}
+            />} 
+          />
         </Route>
 
         <Route path="*" element={<div>404 Not Found</div>} />

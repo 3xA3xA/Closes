@@ -43,7 +43,7 @@
 .formGroup select,
 .formGroup input {
   width: 100%;
-  padding: 8px;
+  padding: 4px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }

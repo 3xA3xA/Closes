@@ -19,6 +19,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       localStorage.setItem('accessToken', userData.token || '');
       console.log('userData при логинации', userData)
       setUser(userData);
+
+      return userData
     } catch (error) {
       console.error('Login failed:', error);
       throw error;

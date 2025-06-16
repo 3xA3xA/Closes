@@ -1,0 +1,25 @@
+.main {
+    padding: 16px 32px;
+    color: #000;
+}
+
+.wishList {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.createButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 85px;
+    width: 85%;
+    height: 58px;
+    color: #fff;
+    background-color: #34D399;
+    border-radius: 16px;
+    z-index: 5;
+}

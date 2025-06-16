@@ -40,8 +40,15 @@ export const joinGroupSchema = yup.object({
     .transform(value => value.toUpperCase())
 })
 
+export const createWishSchema = yup.object({
+  name: yup.string().required('Обязательное поле'),
+  description: yup.string().min(3, 'Минимум 3 символа в описании').max(50, 'Максимум 50 символов в описании').required('Обязательное поле'),
+  priority: yup.string().required('Приоритет обязателен!')
+})
+
 export type LoginFormData = yup.InferType<typeof loginSchema>;
 export type RegisterFormData = yup.InferType<typeof registerSchema>;
 export type UserUpdateFormData = yup.InferType<typeof userUpdateSchema>;
-export type CreateGroupFormData = yup.InferType<typeof createGroupSchema>
-export type JoinGroupFormData = yup.InferType<typeof joinGroupSchema>
+export type CreateGroupFormData = yup.InferType<typeof createGroupSchema>;
+export type JoinGroupFormData = yup.InferType<typeof joinGroupSchema>;
+export type CreateWishFormData = yup.InferType<typeof createWishSchema>;

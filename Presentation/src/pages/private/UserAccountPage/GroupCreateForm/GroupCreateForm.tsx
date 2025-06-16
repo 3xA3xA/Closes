@@ -20,8 +20,6 @@ export const GroupCreateForm: React.FC<GroupModalFormProps> = ({ isOpen, onClose
     setError,
   } = useForm<CreateGroupFormData>();
 
-  console.log('user')
-
   if (!isOpen) return null;
 
   const onSubmit = async (data: CreateGroupFormData) => {
@@ -33,6 +31,7 @@ export const GroupCreateForm: React.FC<GroupModalFormProps> = ({ isOpen, onClose
         }
         console.log('normalizedData', normalizedData)
         await createGroup(normalizedData)
+        onClose()
       } catch {
         setError('root', {
           type: 'manual',

@@ -52,9 +52,12 @@
 }
 
 .family {
+    text-align: center;
+    width: 100%;
     border-radius: 16px;
     padding: 8px;
-    background-color: #34D399;
+    color: #34D399;
+    background-color: #fff;
 }
 
 .pair {

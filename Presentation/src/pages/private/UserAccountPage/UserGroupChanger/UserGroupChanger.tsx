@@ -19,8 +19,8 @@ interface UserGroupChangerProps {
 
 export const UserGroupChanger: React.FC<UserGroupChangerProps> = ({ isModalOpen, setIsModalOpen, user, selectedGroup, setSelectedGroup }) => {
     const [groups, setGroups] = useState<Group[]>([]);
-    const [ loading, setLoading] = useState(true);
-    const [ error, setError] = useState<string | null>(null);
+    const [ _loading, setLoading] = useState(true);
+    const [ _error, setError] = useState<string | null>(null);
 
     const navigate = useNavigate();
 
@@ -65,7 +65,7 @@ export const UserGroupChanger: React.FC<UserGroupChangerProps> = ({ isModalOpen,
                                             groupItem.type === 0 ? '#34D399' :
                                             groupItem.type === 1 ? '#FBCFE8' :
                                             groupItem.type === 2 ? '#82A6DD' : 
-                                            'transparent' // цвет по умолчанию, если тип не совпадает
+                                            'transparent' 
                                 }}>
                                     <div className={styles.iconGroup}>
                                         {
@@ -99,17 +99,20 @@ export const UserGroupChanger: React.FC<UserGroupChangerProps> = ({ isModalOpen,
                             ))
                         ) : (
                             <>
-                                <li className={styles.family} onClick={() => {
-                                        setIsModalOpen(true)
-                                    }
-                                }>
-                                    Создать группу
-                                </li>
+                                
                             </>
                         )
                     }
                 </ul>
             </section>
+
+            <div className={styles.family} 
+                onClick={() => {
+                    setIsModalOpen(true)
+                }
+            }>
+                Создать группу
+            </div>
 
             <GroupCreateForm
                 user={user}
