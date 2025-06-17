@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250616153259_init")]
-    partial class init
+    [Migration("20250617181028_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -161,7 +161,12 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Quizzes");
                 });
@@ -176,17 +181,17 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("QuizItemId")
+                    b.Property<Guid>("GroupMemberId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("QuizItemId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuizItemId");
+                    b.HasIndex("GroupMemberId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("QuizItemId");
 
                     b.ToTable("QuizAnswers");
                 });
@@ -220,20 +225,20 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CompletedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("GroupMemberId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("QuizId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Score")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("QuizId");
+                    b.HasIndex("GroupMemberId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("QuizId");
 
                     b.ToTable("QuizResults");
                 });
@@ -395,23 +400,34 @@ namespace Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Quiz", b =>
+                {
+                    b.HasOne("Domain.Entities.User", "User")
+                        .WithMany("CreatedQuizzes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Entities.QuizAnswer", b =>
                 {
+                    b.HasOne("Domain.Entities.GroupMember", "GroupMember")
+                        .WithMany("QuizAnswers")
+                        .HasForeignKey("GroupMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.QuizItem", "QuizItem")
                         .WithMany("QuizAnswers")
                         .HasForeignKey("QuizItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.User", "User")
-                        .WithMany("QuizAnswers")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("GroupMember");
 
                     b.Navigation("QuizItem");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.QuizItem", b =>
@@ -427,21 +443,21 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.QuizResult", b =>
                 {
+                    b.HasOne("Domain.Entities.GroupMember", "GroupMember")
+                        .WithMany("QuizResults")
+                        .HasForeignKey("GroupMemberId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("Domain.Entities.Quiz", "Quiz")
                         .WithMany("QuizResults")
                         .HasForeignKey("QuizId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.User", "User")
-                        .WithMany("QuizResults")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("GroupMember");
 
                     b.Navigation("Quiz");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Entities.Wishlist", b =>
@@ -497,6 +513,10 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.GroupMember", b =>
                 {
                     b.Navigation("CreatedWishlistItems");
+
+                    b.Navigation("QuizAnswers");
+
+                    b.Navigation("QuizResults");
                 });
 
             modelBuilder.Entity("Domain.Entities.Quiz", b =>
@@ -515,13 +535,11 @@ namespace Infrastructure.Migrations
                 {
                     b.Navigation("ActivityMembers");
 
+                    b.Navigation("CreatedQuizzes");
+
                     b.Navigation("CreatedWishlistItems");
 
                     b.Navigation("GroupMembers");
-
-                    b.Navigation("QuizAnswers");
-
-                    b.Navigation("QuizResults");
 
                     b.Navigation("Wishlists");
                 });

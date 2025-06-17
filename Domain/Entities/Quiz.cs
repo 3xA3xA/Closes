@@ -7,6 +7,10 @@
         public string Name { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+        public Guid UserId { get; set; }
+
+        // Навигационное свойство к пользователю (создателю квиза)
+        public virtual User User { get; set; }
 
         // Список вопросов (элементы викторины)
         public virtual ICollection<QuizItem> QuizItems { get; set; } = new List<QuizItem>();

@@ -1,0 +1,19 @@
+﻿using Domain.DTOs;
+using Domain.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Application.Interfaces
+{
+    public interface IQuizService
+    {
+        Task<Quiz> CreateQuizAsync(CreateQuizDto dto);
+        Task<QuizItem> CreateQuizItemAsync(CreateQuizItemDto dto);
+        Task<QuizItem?> GetQuizItemByIdAsync(Guid id);
+        Task<IEnumerable<QuizItem>> GetQuizItemsByQuizIdAsync(Guid quizId);
+        Task<bool> DeleteQuizItemByIdAsync(Guid id);
+    }
+}

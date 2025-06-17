@@ -62,6 +62,12 @@ namespace Infrastructure.Data
                 .WithMany(gm => gm.CreatedWishlistItems)
                 .HasForeignKey(wi => wi.GroupMemberId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Quiz>()
+                .HasOne(q => q.User)
+                .WithMany(u => u.CreatedQuizzes)
+                .HasForeignKey(q => q.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
