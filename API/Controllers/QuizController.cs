@@ -18,14 +18,14 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Создание нового квиза.
+        /// Создание нового квиза с вопросами.
         /// </summary>
-        /// <param name="dto">Данные для создания квиза (название, категория и идентификатор создателя).</param>
-        /// <returns>Созданный квиз.</returns>
+        /// <param name="dto">Данные для создания квиза (название, описание, категория, идентификатор создателя и список вопросов).</param>
+        /// <returns>Созданный квиз со всеми вопросами.</returns>
         [HttpPost]
         [SwaggerOperation(
             Summary = "Создание нового квиза",
-            Description = "Создает новый квиз с указанными данными. Поле UserId позволяет определить, кто его создал."
+            Description = "Создает новый квиз с указанными данными, включая описание и вопросы. Поле UserId используется для определения создателя."
         )]
         [SwaggerResponse(201, "Квиз успешно создан", typeof(Quiz))]
         [SwaggerResponse(400, "Ошибка при создании квиза")]
@@ -34,6 +34,7 @@ namespace API.Controllers
             try
             {
                 var quiz = await _quizService.CreateQuizAsync(dto);
+                // Если у вас реализован эндпоинт получения квиза по Id, можно использовать CreatedAtAction.
                 return CreatedAtAction(nameof(GetQuizById), new { id = quiz.Id }, quiz);
             }
             catch (Exception ex)
@@ -59,31 +60,6 @@ namespace API.Controllers
             // В данном примере метод получения квиза не реализован,
             // поэтому возвращаем NotFound. Реализуйте его при необходимости.
             return NotFound();
-        }
-
-        /// <summary>
-        /// Создание нового вопроса для квиза.
-        /// </summary>
-        /// <param name="dto">Данные для создания вопроса (QuizId и текст вопроса).</param>
-        /// <returns>Созданный вопрос квиза.</returns>
-        [HttpPost("item")]
-        [SwaggerOperation(
-            Summary = "Создание нового вопроса для квиза",
-            Description = "Создает новый вопрос для конкретного квиза с указанными данными."
-        )]
-        [SwaggerResponse(201, "Вопрос успешно создан", typeof(QuizItem))]
-        [SwaggerResponse(400, "Ошибка при создании вопроса")]
-        public async Task<IActionResult> CreateQuizItem([FromBody] CreateQuizItemDto dto)
-        {
-            try
-            {
-                var quizItem = await _quizService.CreateQuizItemAsync(dto);
-                return CreatedAtAction(nameof(GetQuizItemById), new { id = quizItem.Id }, quizItem);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { message = ex.Message });
-            }
         }
 
         /// <summary>

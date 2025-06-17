@@ -22,38 +22,30 @@ namespace Application.Services
 
         public async Task<Quiz> CreateQuizAsync(CreateQuizDto dto)
         {
-            // Создаем новый объект квиза с заданными параметрами
+            // Создаем объект квиза и заполняем его основными свойствами
             var quiz = new Quiz
             {
                 Name = dto.Name,
+                Description = dto.Description, // новое поле
                 Category = dto.Category,
                 CreatedAt = DateTime.UtcNow,
                 UserId = dto.UserId
             };
 
-            // Добавляем квиз в контекст и сохраняем изменения
+            // Для каждого вопроса, пришедшего из фронта, создаём объект QuizItem
+            foreach (var question in dto.Questions)
+            {
+                quiz.QuizItems.Add(new QuizItem
+                {
+                    Text = question.Text
+                    // Связь с квизом устанавливается автоматически через навигационное свойство
+                });
+            }
+
             _dbContext.Quizzes.Add(quiz);
             await _dbContext.SaveChangesAsync();
 
-            // Можно при необходимости загрузить дополнительные навигационные свойства
-
             return quiz;
-        }
-
-        public async Task<QuizItem> CreateQuizItemAsync(CreateQuizItemDto dto)
-        {
-            // Создаем новый объект вопроса квиза.
-            var quizItem = new QuizItem
-            {
-                QuizId = dto.QuizId,
-                Text = dto.Text
-            };
-
-            _dbContext.QuizItems.Add(quizItem);
-            await _dbContext.SaveChangesAsync();
-
-            // Можно добавить Include навигационных свойств, если необходимо.
-            return quizItem;
         }
 
         public async Task<QuizItem?> GetQuizItemByIdAsync(Guid id)
