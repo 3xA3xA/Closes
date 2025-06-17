@@ -5,6 +5,7 @@ import type { User } from "../../../../auth/types";
 import styles from './GroupCreateForm.module.css'
 import type { CreateGroupFormData } from "../../../../schemas";
 import { createGroup, type GroupInfo } from "../../../../api/GroupService/groupService";
+import { addNewWishlist } from "../../../../api/WishlistService/wishListService";
 
 interface GroupModalFormProps {
     isOpen: boolean;
@@ -30,7 +31,9 @@ export const GroupCreateForm: React.FC<GroupModalFormProps> = ({ isOpen, onClose
             ownerId: user?.id ?? ''
         }
         console.log('normalizedData', normalizedData)
-        await createGroup(normalizedData)
+        const createdGroup = await createGroup(normalizedData);
+        console.log('createdGroup', createdGroup)
+        addNewWishlist(createdGroup.id)
         onClose()
       } catch {
         setError('root', {

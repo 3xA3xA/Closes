@@ -1,0 +1,12 @@
+.root {
+    position: relative;
+}
+
+.main {
+    
+    display: relative;
+    padding: 16px 32px;
+    color: #000;
+    min-height: 100vh;
+}
+

@@ -22,7 +22,6 @@ export const AchievementPage = () => {
     
     const finalAchievements = achievementsMap[group?.type as GroupType] || [];
 
-
     return (
         <div className={styles.root}>
             <Header />
