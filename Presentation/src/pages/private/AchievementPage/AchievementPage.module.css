@@ -1,0 +1,17 @@
+.root {
+    padding-bottom: 90px;
+}
+
+.main {
+    padding: 16px 32px;
+    color: #000;
+    min-height: 100vh;
+}
+
+.achieveList {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 18px;
+}
+

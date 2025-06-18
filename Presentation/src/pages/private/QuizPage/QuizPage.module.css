@@ -3,10 +3,15 @@
 }
 
 .main {
-    
     display: relative;
     padding: 16px 32px;
     color: #000;
     min-height: 100vh;
 }
 
+.quizList {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+}

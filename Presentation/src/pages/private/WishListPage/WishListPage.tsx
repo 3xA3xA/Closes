@@ -48,7 +48,7 @@ export const WishListPage: React.FC<WishListPageProps> = ({ isModalOpen, setIsMo
 
     return (
         <div className={styles.root}>
-            <Header />
+            <Header title='Карта желаний'/>
 
             <main className={styles.main}>
                 <ul className={styles.wishList}>

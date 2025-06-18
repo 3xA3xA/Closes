@@ -1,0 +1,43 @@
+.achieve {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 174px;
+    height: 160px;
+    padding: 8px 16px;
+    border-radius: 16px;
+}
+
+.icon {
+    width: 80px;
+}
+
+.info {
+    font-size: 12px;
+    text-align: center;
+}
+
+.iconPriority0 {
+    color: rgba(138, 43, 226, 0.7);
+}
+
+.iconPriority1 {
+    color: rgba(255, 105, 180, 0.7);
+}
+
+.iconPriority2 {
+    color: rgba(255, 0, 0, 0.7);
+}
+
+.priority0 {
+  box-shadow: 0 0 10px rgba(138, 43, 226, 0.7); /* фиолетовый */
+}
+
+.priority1 {
+  box-shadow: 0 0 10px rgba(255, 105, 180, 0.7); /* розовый */
+}
+
+.priority2 {
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.7); /* красный */
+}

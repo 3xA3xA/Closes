@@ -1,0 +1,42 @@
+
+.quizItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.quizItem:hover {
+  transform: translateY(-2px);
+}
+
+.quizInfo {
+  flex: 1;
+}
+
+.quizName {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.quizDescription {
+  margin: 0 0 4px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.quizDate {
+  margin: 0;
+  color: #999;
+  font-size: 12px;
+}
+
+.quizIcon {
+  font-size: 64px;
+  margin-left: 16px;
+}

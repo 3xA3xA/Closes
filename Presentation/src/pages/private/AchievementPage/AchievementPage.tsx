@@ -6,6 +6,7 @@ import type { Group } from '../UserAccountPage/types'
 import { getGroupById } from '../../../api/GroupService/groupService'
 import { useParams } from 'react-router-dom'
 import { achievementsMap, type GroupType } from './constants'
+import { AchievementItem } from './AchievementItem/AchievementItem'
 
 export const AchievementPage = () => {
     const groupId = useParams();
@@ -24,17 +25,12 @@ export const AchievementPage = () => {
 
     return (
         <div className={styles.root}>
-            <Header />
+            <Header title='Достижения'/>
 
-            <main style={{color: '#000'}}>
+            <main className={styles.main}>
                 <ul className={styles.achieveList}> 
                     {finalAchievements.map((achieve) => (
-                        <li className={styles.achieve}>
-                            <div className={styles.icon}>
-                                {achieve.name}
-                            </div>
-                           
-                        </li>
+                        <AchievementItem icon={achieve.icon} name={achieve.name} passed={achieve.passed} priority={achieve.priority}/>
                     ))}
                 </ul>
             </main>

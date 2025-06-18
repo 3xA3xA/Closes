@@ -4,24 +4,28 @@ import { useState } from 'react';
 import { Header } from '../../../../components/semantic/Header/Header';
 import { NavBar } from '../../../../components/semantic/NavBar/NavBar';
 import { useAuth } from '../../../../auth/AuthContext/AuthContext';
+import { createQuiz } from '../../../../api/QuizService/quizService';
+import { GrFormPreviousLink } from "react-icons/gr";
+import { Link, useParams } from 'react-router-dom';
 
 
 export const QuizCreatePage = () => {
 
+    const { groupId } = useParams()
     const { user } = useAuth();
 
     const [formData, setFormData] = useState<QuizFormValues>({
         name: '',
         description: '',
-        category: 'Общие',
+        category: '0',
         questions: [{ text: '' }]
     });
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({
-        ...prev,
-        [name]: value
+            ...prev,
+            [name]: value
         }));
     };
 
@@ -58,15 +62,27 @@ export const QuizCreatePage = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Form submitted:', formData, user);
+        createQuiz({
+            userId: user?.id ?? '',
+            ...formData
+        })
+        console.log('Квиз создан с такими данными:', 
+            {
+                userId: user?.id ?? '',
+                ...formData
+            }
+        )
     };
 
     return (
         <div className={styles.root}>
-            <Header />
+            <Header title='Создание квиза'/>
 
             <main className={styles.main}>
                 <div className={styles.head}>
+                    <Link style={{color: '#000', width: '20px'}} to={groupId ? `/groupQuizPage/${groupId}` : '#'}>
+                        <GrFormPreviousLink style={{width: '100%'}}/>
+                    </Link>
                     <h2>Создать новый квиз</h2>
                 </div>
                 
@@ -105,8 +121,8 @@ export const QuizCreatePage = () => {
                                 Категории квиза
                             </label>
                             <select
-                                id="quizCategory"
-                                name="quizCategory"
+                                id="category"
+                                name="category"
                                 value={formData.category}
                                 onChange={handleInputChange}
                                 className={styles.questionField}
