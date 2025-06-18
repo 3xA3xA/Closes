@@ -12,7 +12,8 @@ namespace Application.Interfaces
     {
         Task<Quiz> CreateQuizAsync(CreateQuizDto dto);
         Task<QuizItem?> GetQuizItemByIdAsync(Guid id);
-        Task<IEnumerable<QuizItem>> GetQuizItemsByQuizIdAsync(Guid quizId);
+        Task<Quiz?> GetQuizWithItemsByQuizIdAsync(Guid quizId);
         Task<bool> DeleteQuizItemByIdAsync(Guid id);
+        Task<bool> DeleteQuizByIdAsync(Guid quizId);
     }
 }

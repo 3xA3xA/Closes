@@ -1,4 +1,6 @@
-﻿namespace Domain.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace Domain.Entities
 {
     // Викторина
     public class Quiz
@@ -11,11 +13,13 @@
         public Guid UserId { get; set; }
 
         // Навигационное свойство к пользователю (создателю квиза)
+        [JsonIgnore]
         public virtual User User { get; set; }
 
         // Список вопросов (элементы викторины)
         public virtual ICollection<QuizItem> QuizItems { get; set; } = new List<QuizItem>();
         // Результаты прохождения викторины
+        [JsonIgnore]
         public virtual ICollection<QuizResult> QuizResults { get; set; } = new List<QuizResult>();
     }
 }

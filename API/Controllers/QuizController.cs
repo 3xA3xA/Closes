@@ -50,7 +50,7 @@ namespace API.Controllers
         /// <returns>Квиз.</returns>
         [HttpGet("{id:guid}")]
         [SwaggerOperation(
-            Summary = "Получение квиза по Id",
+            Summary = "НЕ ИСПОЛЬЗУЙ!!!!",
             Description = "Возвращает данные квиза по его уникальному идентификатору."
         )]
         [SwaggerResponse(200, "Квиз найден", typeof(Quiz))]
@@ -69,7 +69,7 @@ namespace API.Controllers
         /// <returns>Объект вопроса квиза.</returns>
         [HttpGet("item/{id:guid}")]
         [SwaggerOperation(
-            Summary = "Получение вопроса квиза по Id",
+            Summary = "НЕ ИСПОЛЬЗУЙ!!!!",
             Description = "Возвращает данные вопроса квиза по его уникальному идентификатору."
         )]
         [SwaggerResponse(200, "Вопрос найден", typeof(QuizItem))]
@@ -83,23 +83,25 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Получение всех вопросов для указанного квиза.
+        /// Получение квиза с вопросами по его уникальному идентификатору.
         /// </summary>
         /// <param name="quizId">Уникальный идентификатор квиза.</param>
-        /// <returns>Список вопросов квиза.</returns>
-        [HttpGet("item/quiz/{quizId:guid}")]
+        /// <returns>Квиз со списком вопросов.</returns>
+        [HttpGet("with-items/{quizId:guid}")]
         [SwaggerOperation(
-            Summary = "Получение всех вопросов квиза по Id квиза",
-            Description = "Возвращает список всех вопросов для указанного квиза."
+            Summary = "Получение квиза с вопросами по Id квиза",
+            Description = "Возвращает квиз и все связанные вопросы для указанного квиза."
         )]
-        [SwaggerResponse(200, "Вопросы квиза успешно получены", typeof(IEnumerable<QuizItem>))]
-        [SwaggerResponse(404, "Вопросы квиза не найдены")]
-        public async Task<IActionResult> GetQuizItemsByQuizId(Guid quizId)
+        [SwaggerResponse(200, "Квиз с вопросами успешно получен", typeof(Quiz))]
+        [SwaggerResponse(404, "Квиз не найден")]
+        public async Task<IActionResult> GetQuizWithItemsByQuizId(Guid quizId)
         {
-            var quizItems = await _quizService.GetQuizItemsByQuizIdAsync(quizId);
-            if (quizItems == null || !quizItems.Any())
-                return NotFound(new { message = "Вопросы квиза не найдены" });
-            return Ok(quizItems);
+            var quiz = await _quizService.GetQuizWithItemsByQuizIdAsync(quizId);
+            if (quiz == null)
+            {
+                return NotFound(new { message = "Квиз не найден" });
+            }
+            return Ok(quiz);
         }
 
         /// <summary>
@@ -119,6 +121,26 @@ namespace API.Controllers
             var deleted = await _quizService.DeleteQuizItemByIdAsync(quizItemId);
             if (!deleted)
                 return NotFound(new { message = "Вопрос квиза не найден" });
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Удаление квиза по его уникальному идентификатору, включая все связанные вопросы.
+        /// </summary>
+        /// <param name="quizId">Уникальный идентификатор квиза.</param>
+        /// <returns>Статус успешного удаления.</returns>
+        [HttpDelete("{quizId:guid}")]
+        [SwaggerOperation(
+            Summary = "Удаление квиза по Id",
+            Description = "Удаляет квиз и все связанные вопросы по его уникальному идентификатору."
+        )]
+        [SwaggerResponse(204, "Квиз успешно удален")]
+        [SwaggerResponse(404, "Квиз не найден")]
+        public async Task<IActionResult> DeleteQuiz(Guid quizId)
+        {
+            var deleted = await _quizService.DeleteQuizByIdAsync(quizId);
+            if (!deleted)
+                return NotFound(new { message = "Квиз не найден" });
             return NoContent();
         }
     }

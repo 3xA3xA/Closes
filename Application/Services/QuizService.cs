@@ -38,7 +38,6 @@ namespace Application.Services
                 quiz.QuizItems.Add(new QuizItem
                 {
                     Text = question.Text
-                    // Связь с квизом устанавливается автоматически через навигационное свойство
                 });
             }
 
@@ -50,15 +49,14 @@ namespace Application.Services
 
         public async Task<QuizItem?> GetQuizItemByIdAsync(Guid id)
         {
-            // Можно добавить Include навигационных свойств, если это необходимо.
             return await _dbContext.QuizItems.FirstOrDefaultAsync(qi => qi.Id == id);
         }
 
-        public async Task<IEnumerable<QuizItem>> GetQuizItemsByQuizIdAsync(Guid quizId)
+        public async Task<Quiz?> GetQuizWithItemsByQuizIdAsync(Guid quizId)
         {
-            return await _dbContext.QuizItems
-                .Where(qi => qi.QuizId == quizId)
-                .ToListAsync();
+            return await _dbContext.Quizzes
+                        .Include(q => q.QuizItems)
+                        .FirstOrDefaultAsync(q => q.Id == quizId);
         }
 
         public async Task<bool> DeleteQuizItemByIdAsync(Guid id)
@@ -70,6 +68,21 @@ namespace Application.Services
             }
 
             _dbContext.QuizItems.Remove(quizItem);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteQuizByIdAsync(Guid quizId)
+        {
+            // Загружаем квиз вместе с вопросами
+            var quiz = await _dbContext.Quizzes
+                        .Include(q => q.QuizItems)
+                        .FirstOrDefaultAsync(q => q.Id == quizId);
+
+            if (quiz == null)
+                return false;
+
+            _dbContext.Quizzes.Remove(quiz);
             await _dbContext.SaveChangesAsync();
             return true;
         }
