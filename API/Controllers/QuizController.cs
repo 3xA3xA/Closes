@@ -197,5 +197,18 @@ namespace API.Controllers
             var quizzes = await _quizService.GetAllQuizzesAsync();
             return Ok(quizzes);
         }
+
+        [HttpGet("for-member/{groupMemberId:guid}")]
+        [SwaggerOperation(
+            Summary = "Получение квизов, пройденных участником",
+            Description = "Возвращает список квизов, для которых указанный участник группы оставил ответы."
+        )]
+        [SwaggerResponse(200, "Квиз успешно получены", typeof(IEnumerable<Quiz>))]
+        public async Task<IActionResult> GetQuizzesForMember(Guid groupMemberId)
+        {
+            var quizzes = await _quizService.GetQuizzesForMemberAsync(groupMemberId);
+            return Ok(quizzes);
+        }
+
     }
 }

@@ -178,5 +178,24 @@ namespace Application.Services
             // Можно добавить сортировку или фильтрацию при необходимости
             return await _dbContext.Quizzes.ToListAsync();
         }
+
+        public async Task<IEnumerable<Quiz>> GetQuizzesForMemberAsync(Guid groupMemberId)
+        {
+            // Получаем список уникальных идентификаторов квизов для которых есть ответы участника
+            var quizIds = await _dbContext.QuizAnswers
+                            .Where(qa => qa.GroupMemberId == groupMemberId)
+                            .Select(qa => qa.QuizItem.QuizId)
+                            .Distinct()
+                            .ToListAsync();
+
+            // Загружаем квизы вместе с вопросами
+            var quizzes = await _dbContext.Quizzes
+                            .Where(q => quizIds.Contains(q.Id))
+                            .Include(q => q.QuizItems)
+                            .ToListAsync();
+
+            return quizzes;
+        }
+
     }
 }
