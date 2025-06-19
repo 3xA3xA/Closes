@@ -197,5 +197,19 @@ namespace Application.Services
             return quizzes;
         }
 
+        public async Task<IEnumerable<GroupMember>> GetParticipantsWhoPassedQuizAsync(Guid quizId, Guid groupId, Guid excludeMemberId)
+        {
+            var participants = await _dbContext.QuizAnswers
+                .Include(qa => qa.GroupMember)
+                .Include(qa => qa.QuizItem)
+                .Where(qa => qa.QuizItem.QuizId == quizId
+                             && qa.GroupMember.GroupId == groupId
+                             && qa.GroupMemberId != excludeMemberId)
+                .Select(qa => qa.GroupMember)
+                .Distinct()
+                .ToListAsync();
+
+            return participants;
+        }
     }
 }

@@ -19,5 +19,6 @@ namespace Application.Interfaces
         Task<QuizWithAnswersDto?> GetQuizWithItemsAndAnswersForMemberByQuizIdAsync(Guid quizId, Guid groupMemberId);
         Task<IEnumerable<Quiz>> GetAllQuizzesAsync();
         Task<IEnumerable<Quiz>> GetQuizzesForMemberAsync(Guid groupMemberId);
+        Task<IEnumerable<GroupMember>> GetParticipantsWhoPassedQuizAsync(Guid quizId, Guid groupId, Guid excludeMemberId);
     }
 }

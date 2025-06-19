@@ -210,5 +210,28 @@ namespace API.Controllers
             return Ok(quizzes);
         }
 
+        /// <summary>
+        /// Получение участников, прошедших квиз, за исключением указанного участника.
+        /// </summary>
+        /// <param name="quizId">Уникальный идентификатор квиза.</param>
+        /// <param name="groupId">Уникальный идентификатор группы.</param>
+        /// <param name="excludeMemberId">Идентификатор участника, которого не следует включать в результат.</param>
+        /// <returns>Список участников, прошедших квиз, кроме указанного.</returns>
+        [HttpGet("quiz-members/{quizId:guid}/{groupId:guid}/{excludeMemberId:guid}")]
+        [SwaggerOperation(
+            Summary = "Получение участников, прошедших квиз (без исключённого участника)",
+            Description = "Возвращает участников группы, которые имеют ответы на вопросы квиза, за исключением участника с указанным идентификатором."
+        )]
+        [SwaggerResponse(200, "Участники найдены", typeof(IEnumerable<GroupMember>))]
+        [SwaggerResponse(404, "Участники не найдены")]
+        public async Task<IActionResult> GetMembersWhoPassedQuiz(Guid quizId, Guid groupId, Guid excludeMemberId)
+        {
+            var participants = await _quizService.GetParticipantsWhoPassedQuizAsync(quizId, groupId, excludeMemberId);
+            if (participants == null || !participants.Any())
+            {
+                return NotFound(new { message = "Участники не найдены" });
+            }
+            return Ok(participants);
+        }
     }
 }
