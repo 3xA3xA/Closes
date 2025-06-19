@@ -226,12 +226,12 @@ namespace API.Controllers
         [SwaggerResponse(404, "Участники не найдены")]
         public async Task<IActionResult> GetMembersWhoPassedQuiz(Guid quizId, Guid groupId, Guid excludeMemberId)
         {
-            var participants = await _quizService.GetParticipantsWhoPassedQuizAsync(quizId, groupId, excludeMemberId);
-            if (participants == null || !participants.Any())
+            var quizMembers = await _quizService.GetParticipantsWhoPassedQuizAsync(quizId, groupId, excludeMemberId);
+            if (quizMembers == null || !quizMembers.Any())
             {
                 return NotFound(new { message = "Участники не найдены" });
             }
-            return Ok(participants);
+            return Ok(quizMembers);
         }
     }
 }
