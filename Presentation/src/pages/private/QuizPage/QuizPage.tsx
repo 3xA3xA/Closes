@@ -6,7 +6,7 @@ import styles from './QuizPage.module.css'
 import type { Group } from '../UserAccountPage/types'
 import { Link, useParams } from 'react-router-dom'
 import { QuizItem } from './QuizItem/QuizItem'
-import { getQuizes } from '../../../api/QuizService/quizService'
+import { getPassedQuizesByIds, getQuizes } from '../../../api/QuizService/quizService'
 import type { QuizItem as QuizItemType } from './types'
 
 interface QuizPageProps {
@@ -33,8 +33,22 @@ export const QuizPage: React.FC<QuizPageProps> = () => {
             }
         }
 
-        getAllQuizes()
-    }, [groupId, groupMemberId])
+        const getPassedQuizes = async () => {
+            try {
+                const passedRes = await getPassedQuizesByIds({ groupMemberId: groupMemberId! })
+                setQuizes(passedRes)
+            } catch (err) {
+                console.error('Ошибка запроса пройденных тестов: ', err)
+            }
+        }
+
+        if(showSolved) {
+            getPassedQuizes()
+        } else {
+            getAllQuizes()
+        }
+        
+    }, [groupId, groupMemberId, showSolved])
 
     return (
         <div className={styles.root}>

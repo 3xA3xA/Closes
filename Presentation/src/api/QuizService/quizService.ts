@@ -15,6 +15,10 @@ interface SubmitQuestionsQuiz {
   answers: string[]
 }
 
+interface GetPassedQuizesByIdsParams {
+  groupMemberId: string
+}
+
 const API_URL = 'https://localhost:7201/api/Quiz';
 
 export const createQuiz = async (params: CreateQuizParams) => {
@@ -36,4 +40,9 @@ export const getQuestionsQuizById = async (params: string) => {
 export const submitQuestionsQuiz = async (params: SubmitQuestionsQuiz) => {
   const response = await api.post(`${API_URL}/submit`, params);
   return response.data
+}
+
+export const getPassedQuizesByIds = async (params: GetPassedQuizesByIdsParams) => {
+  const response = await api.get(`${API_URL}/for-member/${params.groupMemberId}`);
+  return response.data as QuizItem[]
 }
