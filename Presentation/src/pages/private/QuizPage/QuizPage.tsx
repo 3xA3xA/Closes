@@ -75,7 +75,7 @@ export const QuizPage: React.FC<QuizPageProps> = () => {
                 <ul className={styles.quizList}>
                     {quizes.map((quiz) => (
                         <Link 
-                            to={`/quizSolution/${groupId}/${groupMemberId}/${quiz.id}`}
+                            to={showSolved ? `/quizSolution/${groupId}/${groupMemberId}/${quiz.id}/passed` : `/quizSolution/${groupId}/${groupMemberId}/${quiz.id}`}
                             state={{ groupId, groupMemberId }}
                         >
                             <QuizItem quiz={quiz}/>

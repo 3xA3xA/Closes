@@ -14,6 +14,7 @@ import { CalendarPage } from './pages/private/CalendarPage/CalendarPage'
 import { AchievementPage } from './pages/private/AchievementPage/AchievementPage'
 import { QuizCreatePage } from './pages/private/QuizPage/QuizCreatePage/QuizCreatePage'
 import { QuizSolutionPage } from './pages/private/QuizPage/QuizSolutionPage/QuizSolutionPage'
+import { QuizCheckPage } from './pages/private/QuizPage/QuizCheckPage/QuizCheckPage'
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -48,6 +49,7 @@ function App() {
           />
           <Route path="/groupCreateQuiz/:groupId/:groupMemberId" element={<QuizCreatePage />} />
           <Route path="/quizSolution/:groupId/:groupMemberId/:quizId" element={<QuizSolutionPage />} />
+          <Route path="/quizSolution/:groupId/:groupMemberId/:quizId/passed" element={<QuizCheckPage />} />
           <Route path="/groupCalendarPage/:groupId/:groupMemberId" element={<CalendarPage />} />
           <Route path="/groupAchievementPage/:groupId/:groupMemberId" element={<AchievementPage />} />
           <Route path="/groupWishListPage/:groupId/:groupMemberId" element={

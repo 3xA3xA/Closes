@@ -1,0 +1,158 @@
+.root {
+    padding-bottom: 90px;
+}
+
+.main {
+    display: relative;
+    padding: 16px 32px;
+    color: #000;
+    min-height: 100vh;
+}
+
+.loading, .error {
+  text-align: center;
+  padding: 40px;
+  font-size: 18px;
+  color: #666;
+}
+
+.error {
+  color: #d32f2f;
+}
+
+.quizInfo {
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.quizInfo h2 {
+  margin: 0;
+  color: #333;
+}
+
+.quizDescription {
+  margin-top: 8px;
+  color: #666;
+  font-size: 14px;
+}
+
+.selectContainer {
+  margin: 25px 0;
+}
+
+.memberSelect {
+  width: 100%;
+  padding: 12px 15px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  background-color: white;
+  appearance: none;
+}
+
+.memberSelect:disabled {
+  background-color: #f9f9f9;
+  color: #999;
+}
+
+.comparisonTitle {
+  margin: 30px 0 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+  color: #333;
+  font-size: 18px;
+}
+
+.comparisonList {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 30px;
+}
+
+.comparisonItem {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #eee;
+}
+
+.questionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.questionOrder {
+  font-weight: bold;
+  color: #555;
+  font-size: 15px;
+}
+
+.questionText {
+  margin: 15px 0;
+  color: #333;
+  line-height: 1.5;
+}
+
+.answerSection {
+  margin-top: 20px;
+}
+
+.answerBlock {
+  margin-bottom: 15px;
+}
+
+.answerLabel {
+  font-weight: bold;
+  color: #444;
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.answerBlock p {
+  margin: 5px 0 0;
+  padding: 8px 12px;
+  background: #f9f9f9;
+  border-radius: 4px;
+  color: #333;
+}
+
+.badge {
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.match {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.mismatch {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.backButton {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background-color: #34D399;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 30px;
+  transition: background-color 0.3s;
+}
+
+.backButton:hover {
+  background-color: #23eca3;
+}
