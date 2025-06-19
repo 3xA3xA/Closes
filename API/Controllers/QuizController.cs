@@ -34,7 +34,6 @@ namespace API.Controllers
             try
             {
                 var quiz = await _quizService.CreateQuizAsync(dto);
-                // Если у вас реализован эндпоинт получения квиза по Id, можно использовать CreatedAtAction.
                 return CreatedAtAction(nameof(GetQuizById), new { id = quiz.Id }, quiz);
             }
             catch (Exception ex)
@@ -142,6 +141,49 @@ namespace API.Controllers
             if (!deleted)
                 return NotFound(new { message = "Квиз не найден" });
             return NoContent();
+        }
+
+        /// <summary>
+        /// Сохранение ответов участника группы на вопросы квиза по id квиза.
+        /// Передаются GroupMemberId, QuizId и массив ответов (строк) – порядок ответов должен соответствовать порядку вопросов квиза.
+        /// </summary>
+        /// <param name="dto">DTO, содержащий GroupMemberId, QuizId и массив ответов.</param>
+        /// <returns>Коллекция сохраненных объектов QuizAnswer.</returns>
+        [HttpPost("submit")]
+        [SwaggerOperation(
+            Summary = "Сохранение ответов участника группы по квизу",
+            Description = "Принимает GroupMemberId, QuizId и массив ответов. После загрузки квиза с вопросами ответы сопоставляются с вопросами по порядку."
+        )]
+        [SwaggerResponse(201, "Ответы успешно сохранены", typeof(IEnumerable<QuizAnswer>))]
+        [SwaggerResponse(400, "Ошибка при сохранении ответов")]
+        public async Task<IActionResult> SubmitQuizAnswersByQuiz([FromBody] SubmitQuizAnswersDto dto)
+        {
+            try
+            {
+                var savedAnswers = await _quizService.SubmitQuizAnswersByQuizAsync(dto);
+                return Created(string.Empty, savedAnswers);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet("with-answers/{quizId:guid}/{groupMemberId:guid}")]
+        [SwaggerOperation(
+            Summary = "Получение квиза с вопросами и ответами участника",
+            Description = "Возвращает квиз с его вопросами, в каждом из которых остаются только ответы указанного участника группы."
+        )]
+        [SwaggerResponse(200, "Квиз с вопросами и ответами успешно получен", typeof(QuizWithAnswersDto))]
+        [SwaggerResponse(404, "Квиз не найден")]
+        public async Task<IActionResult> GetQuizWithItemsAndAnswersForMember(Guid quizId, Guid groupMemberId)
+        {
+            var quizDto = await _quizService.GetQuizWithItemsAndAnswersForMemberByQuizIdAsync(quizId, groupMemberId);
+            if (quizDto == null)
+            {
+                return NotFound(new { message = "Квиз не найден" });
+            }
+            return Ok(quizDto);
         }
     }
 }

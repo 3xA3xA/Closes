@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Domain.DTOs
 {
-    public class CreateQuizDto
+    public class QuizWithAnswersDto
     {
+        public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public string Description { get; set; } = string.Empty;
         public string Category { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
         public Guid UserId { get; set; }
-
-        // Список вопросов квиза
-        public List<CreateQuizQuestionDto> Questions { get; set; } = new List<CreateQuizQuestionDto>();
+        public IEnumerable<QuizItemDto> QuizItems { get; set; } = new List<QuizItemDto>();
     }
 }

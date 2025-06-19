@@ -2,7 +2,6 @@
 
 namespace Domain.Entities
 {
-    // Викторина
     public class Quiz
     {
         public Guid Id { get; set; } = Guid.NewGuid();
@@ -15,8 +14,6 @@ namespace Domain.Entities
         // Навигационное свойство к пользователю (создателю квиза)
         [JsonIgnore]
         public virtual User User { get; set; }
-
-        // Список вопросов (элементы викторины)
         public virtual ICollection<QuizItem> QuizItems { get; set; } = new List<QuizItem>();
         // Результаты прохождения викторины
         [JsonIgnore]
