@@ -1,11 +1,13 @@
 
-import type { Dispatch, SetStateAction } from 'react'
+import { useEffect, useState, type Dispatch, type SetStateAction } from 'react'
 import { Header } from '../../../components/semantic/Header/Header'
 import { NavBar } from '../../../components/semantic/NavBar/NavBar'
 import styles from './QuizPage.module.css'
 import type { Group } from '../UserAccountPage/types'
 import { Link, useParams } from 'react-router-dom'
 import { QuizItem } from './QuizItem/QuizItem'
+import { getQuizes } from '../../../api/QuizService/quizService'
+import type { QuizItem as QuizItemType } from './types'
 
 interface QuizPageProps {
     isModalOpen: boolean;
@@ -16,40 +18,23 @@ interface QuizPageProps {
 export const QuizPage: React.FC<QuizPageProps> = () => {
 
     const { groupId}  = useParams();
-    console.log('groupId', groupId);
+    const { groupMemberId } = useParams()
 
-    const quizes = [
-        {
-            name: 'Для пары',
-            description: 'Для пары',
-            category: 0,
-            createdAt: '2025-06-18 12:29:44.6809889'
-        },
-        {
-            name: 'Для семьи',
-            description: 'Для семьи',
-            category: 1,
-            createdAt: '2025-06-18 12:29:44.6809889'
-        },
-        {
-            name: 'Для друзей',
-            description: 'Для друзей',
-            category: 2,
-            createdAt: '2025-06-18 12:29:44.6809889'
-        },
-        {
-            name: 'Сухарики',
-            description: 'Для пары',
-            category: 3,
-            createdAt: '2025-06-18 12:29:44.6809889'
-        },
-        {
-            name: 'Чупапи',
-            description: 'Чупепы',
-            category: 4,
-            createdAt: '2025-06-18 12:29:44.6809889'
-        },
-    ]
+    const [quizes, setQuizes] = useState<QuizItemType[]>([]);
+    const [showSolved, setShowSolved] = useState(false);
+
+    useEffect(() => {
+        const getAllQuizes = async () => {
+            try {
+                const quizesRes = await getQuizes();
+                setQuizes(quizesRes);
+            } catch (err) {
+                console.error('Ошибка запроса: ', err)
+            }
+        }
+
+        getAllQuizes()
+    }, [groupId, groupMemberId])
 
     return (
         <div className={styles.root}>
@@ -57,12 +42,30 @@ export const QuizPage: React.FC<QuizPageProps> = () => {
 
             <main className={styles.main}>
                 <div className={styles.addBtn}>
-                    <Link style={{color: '#000'}} to={groupId ? `/groupCreateQuiz/${groupId}` : '#'}>+</Link>
+                    <Link style={{color: '#FFF'}} to={groupId && groupMemberId ? `/groupCreateQuiz/${groupId}/${groupMemberId}` : '#'}>+</Link>
                 </div>       
+
+                <div className={styles.toggle}>
+                    <span>Нерешённые</span>
+                    <label className={styles.toggleSwitch}>
+                        <input 
+                            type="checkbox" 
+                            checked={showSolved}
+                            onChange={() => setShowSolved(!showSolved)}
+                        />
+                        <span className={styles.toggleSlider}></span>
+                    </label>
+                    <span>Решённые</span>
+                </div>
 
                 <ul className={styles.quizList}>
                     {quizes.map((quiz) => (
-                        <QuizItem quiz={quiz}/>
+                        <Link 
+                            to={`/quizSolution/${groupId}/${groupMemberId}/${quiz.id}`}
+                            state={{ groupId, groupMemberId }}
+                        >
+                            <QuizItem quiz={quiz}/>
+                        </Link>
                     ))}
                 </ul>         
             </main>

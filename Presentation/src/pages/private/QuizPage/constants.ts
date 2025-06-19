@@ -8,10 +8,12 @@ import { GrCatalog } from "react-icons/gr";
 export type QuizCategory = 'general' | 'love' | 'compatibility' | 'facts' | 'plans';
 
 export interface Quiz {
+  id: string;
   name: string;
   description: string;
   category: number; // 1-5
   createdAt: string;
+  userId: string;
 }
 
 export const icons: Record<QuizCategory, IconType> = {

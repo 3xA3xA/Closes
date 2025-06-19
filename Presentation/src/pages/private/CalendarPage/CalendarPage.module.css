@@ -1,0 +1,9 @@
+.root {
+    padding-bottom: 90px;
+}
+
+.activitiesSection h2{
+    color: #000;
+    font-weight: 600;
+    padding: 16px 32px;
+}

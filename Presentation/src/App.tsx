@@ -13,10 +13,11 @@ import { QuizPage } from './pages/private/QuizPage/QuizPage'
 import { CalendarPage } from './pages/private/CalendarPage/CalendarPage'
 import { AchievementPage } from './pages/private/AchievementPage/AchievementPage'
 import { QuizCreatePage } from './pages/private/QuizPage/QuizCreatePage/QuizCreatePage'
+import { QuizSolutionPage } from './pages/private/QuizPage/QuizSolutionPage/QuizSolutionPage'
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedGroup, setSelectedGroup] = useState<Group | null>(null)
+  const [selectedGroup, setSelectedGroup] = useState<Group | null>(null);
 
   return (
     <BrowserRouter>
@@ -37,18 +38,19 @@ function App() {
               setSelectedGroup={setSelectedGroup}
             />} 
           />
-          <Route path="/groupHomePage/:groupId" element={<GroupHomePage />} />
-          <Route path="/groupQuizPage/:groupId" element={
+          <Route path="/groupHomePage/:groupId/:groupMemberId" element={<GroupHomePage />} />
+          <Route path="/groupQuizPage/:groupId/:groupMemberId" element={
             <QuizPage
               isModalOpen={isModalOpen}
               selectedGroup={selectedGroup}
               setIsModalOpen={setIsModalOpen} 
             />} 
           />
-          <Route path="/groupCreateQuiz/:groupId" element={<QuizCreatePage />} />
-          <Route path="/groupCalendarPage/:groupId" element={<CalendarPage />} />
-          <Route path="/groupAchievementPage/:groupId" element={<AchievementPage />} />
-          <Route path="/groupWishListPage/:groupId" element={
+          <Route path="/groupCreateQuiz/:groupId/:groupMemberId" element={<QuizCreatePage />} />
+          <Route path="/quizSolution/:groupId/:groupMemberId/:quizId" element={<QuizSolutionPage />} />
+          <Route path="/groupCalendarPage/:groupId/:groupMemberId" element={<CalendarPage />} />
+          <Route path="/groupAchievementPage/:groupId/:groupMemberId" element={<AchievementPage />} />
+          <Route path="/groupWishListPage/:groupId/:groupMemberId" element={
             <WishListPage 
               isModalOpen={isModalOpen}
               setIsModalOpen={setIsModalOpen}

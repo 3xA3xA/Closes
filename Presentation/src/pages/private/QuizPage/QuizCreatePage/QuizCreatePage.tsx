@@ -12,6 +12,7 @@ import { Link, useParams } from 'react-router-dom';
 export const QuizCreatePage = () => {
 
     const { groupId } = useParams()
+    const { groupMemberId } = useParams()
     const { user } = useAuth();
 
     const [formData, setFormData] = useState<QuizFormValues>({
@@ -80,7 +81,7 @@ export const QuizCreatePage = () => {
 
             <main className={styles.main}>
                 <div className={styles.head}>
-                    <Link style={{color: '#000', width: '20px'}} to={groupId ? `/groupQuizPage/${groupId}` : '#'}>
+                    <Link style={{color: '#000', width: '20px'}} to={groupId && groupMemberId ? `/groupQuizPage/${groupId}/${groupMemberId}` : '#'}>
                         <GrFormPreviousLink style={{width: '100%'}}/>
                     </Link>
                     <h2>Создать новый квиз</h2>

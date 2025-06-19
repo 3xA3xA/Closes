@@ -9,32 +9,33 @@ import { Link, useParams } from 'react-router-dom';
 export const NavBar = () => {
 
     const { groupId } = useParams();
+    const { groupMemberId } = useParams();
 
     return (
         <nav className={styles.root}>
             <ul className={styles.navList}>
                 <li className={styles.navItem}>
-                    <Link style={{ textDecoration: "none", color: "inherit" }} to={groupId ? `/groupHomePage/${groupId}` : "/userAccount"}>
+                    <Link style={{ textDecoration: "none", color: "inherit" }} to={groupId && groupMemberId ? `/groupHomePage/${groupId}/${groupMemberId}` : "/userAccount"}>
                         <GrHomeRounded className={styles.icon}/>
                     </Link>
                 </li>
                 <li className={styles.navItem}>
-                    <Link style={{ textDecoration: "none", color: "inherit" }} to={groupId ? `/groupQuizPage/${groupId}` : "#"}>
+                    <Link style={{ textDecoration: "none", color: "inherit" }} to={groupId && groupMemberId ? `/groupQuizPage/${groupId}/${groupMemberId}` : "#"}>
                         <GrCircleQuestion className={styles.icon}/>
                     </Link>
                 </li>
                 <li className={styles.navItem}>
-                    <Link style={{ textDecoration: "none", color: "inherit" }} to={groupId ? `/groupCalendarPage/${groupId}` : "#"}>
+                    <Link style={{ textDecoration: "none", color: "inherit" }} to={groupId && groupMemberId ? `/groupCalendarPage/${groupId}/${groupMemberId}` : "#"}>
                         <GrCalendar className={styles.icon}/>
                     </Link>
                 </li>
                 <li className={styles.navItem}>
-                    <Link style={{ textDecoration: "none", color: "inherit" }} to={groupId ? `/groupAchievementPage/${groupId}` : "#"}>
+                    <Link style={{ textDecoration: "none", color: "inherit" }} to={groupId && groupMemberId ? `/groupAchievementPage/${groupId}/${groupMemberId}` : "#"}>
                         <GrAchievement className={styles.icon}/>
                     </Link>
                 </li>
                 <li className={styles.navItem}>
-                    <Link style={{ textDecoration: "none", color: "inherit" }} to={groupId ? `/groupWishListPage/${groupId}` : "#"}>
+                    <Link style={{ textDecoration: "none", color: "inherit" }} to={groupId && groupMemberId ? `/groupWishListPage/${groupId}/${groupMemberId}` : "#"}>
                         <GrStarOutline className={styles.icon}/>
                     </Link>
                 </li>

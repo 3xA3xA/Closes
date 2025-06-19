@@ -5,8 +5,8 @@ import { GiThreeFriends } from "react-icons/gi";
 import { useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { GroupCreateForm } from '../GroupCreateForm/GroupCreateForm';
 import type { User } from '../../../../auth/types';
-import { getGroupsByUserId } from '../../../../api/GroupService/groupService';
-import type { Group } from '../types';
+import { getGroupMemberByUserAndGroupIds, getGroupsByUserId } from '../../../../api/GroupService/groupService';
+import type { Group, Member } from '../types';
 import { useNavigate } from 'react-router-dom';
 
 interface UserGroupChangerProps {
@@ -19,8 +19,7 @@ interface UserGroupChangerProps {
 
 export const UserGroupChanger: React.FC<UserGroupChangerProps> = ({ isModalOpen, setIsModalOpen, user, selectedGroup, setSelectedGroup }) => {
     const [groups, setGroups] = useState<Group[]>([]);
-    const [ _loading, setLoading] = useState(true);
-    const [ _error, setError] = useState<string | null>(null);
+    const [groupMember, setGroupMember] = useState<Partial<Member>>({})
 
     const navigate = useNavigate();
 
@@ -30,10 +29,7 @@ export const UserGroupChanger: React.FC<UserGroupChangerProps> = ({ isModalOpen,
                 const userGroups = await getGroupsByUserId(user?.id ?? '');
                 setGroups(userGroups);
             } catch (err) {
-                setError('Не удалось загрузить группы');
                 console.error('Ошибка при загрузке групп:', err);
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -41,10 +37,23 @@ export const UserGroupChanger: React.FC<UserGroupChangerProps> = ({ isModalOpen,
     }, [user]);
 
     useEffect(() => {
-        if (selectedGroup) {
-            navigate(`/groupHomePage/${selectedGroup.id}`);
+        const fetchGroupMember = async () => {
+            try {
+                const groupMemberRes = await getGroupMemberByUserAndGroupIds(user?.id ?? '', selectedGroup?.id ?? '');
+                setGroupMember(groupMemberRes)
+            } catch (err) {
+                console.error('Ошибка при загрузке участника группы:', err);
+            }
+        } 
+        
+        fetchGroupMember()
+    })
+
+    useEffect(() => {
+        if (selectedGroup && groupMember.id) {
+            navigate(`/groupHomePage/${selectedGroup.id}/${groupMember.id}`);
         }
-    }, [selectedGroup, navigate]);
+    }, [selectedGroup, groupMember, navigate]);
 
     return (
         <>

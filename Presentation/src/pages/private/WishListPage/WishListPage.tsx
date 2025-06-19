@@ -7,9 +7,6 @@ import { deleteWish, getWishList } from '../../../api/WishlistService/wishListSe
 import { useParams } from 'react-router-dom'
 import type { WishList } from './types'
 import { WishCreateForm } from './WishCreateForm/WishCreateForm'
-import { getGroupMemberByUserAndGroupIds } from '../../../api/GroupService/groupService'
-import { useAuth } from '../../../auth/AuthContext/AuthContext'
-import type { Member } from '../UserAccountPage/types'
 
 interface WishListPageProps {
     isModalOpen: boolean;
@@ -18,17 +15,8 @@ interface WishListPageProps {
 
 export const WishListPage: React.FC<WishListPageProps> = ({ isModalOpen, setIsModalOpen }) => {
     const [wishlist, setWishlist] = useState<WishList | null>(null);   
-    const { user } = useAuth()
     const groupId = useParams();
-    const [member, setMember] = useState<Member | null>(null);
-
-    useEffect(() => {
-        getGroupMemberByUserAndGroupIds(user!.id, groupId.groupId!)
-            .then(
-                setMember
-            )
-            .catch(console.error);
-    }, [user, groupId.groupId]);
+    const { groupMemberId } = useParams();
 
     useEffect(() => {
         const fetchWishlist = async () => {
@@ -64,12 +52,14 @@ export const WishListPage: React.FC<WishListPageProps> = ({ isModalOpen, setIsMo
                                         <div className={styles.subtext}>Кто хочет: {present.groupMember.user.name}</div>
                                     </div>
 
-                                    {present.groupMemberId === member?.id && 
+                                    {present.groupMemberId === groupMemberId &&
+
                                         <GrCheckmark 
                                             className={styles.checkMark}
                                             onClick={() => deleteWish(present.id)}
                                         />}
                                 </li>
+
                             ))
                         ) : (
                             <li>К сожалению, не добавлено ни одного желания</li>
@@ -89,8 +79,8 @@ export const WishListPage: React.FC<WishListPageProps> = ({ isModalOpen, setIsMo
 
             <NavBar />
 
-            {wishlist && member && <WishCreateForm
-              memberId={member.id}
+            {wishlist && groupMemberId && <WishCreateForm
+              memberId={groupMemberId}
               wishlistId={wishlist.id}
               isOpen={isModalOpen}
               onClose={() => setIsModalOpen(false)}

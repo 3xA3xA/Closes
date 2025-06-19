@@ -1,9 +1,10 @@
-import { CATEGORIES, icons, type Quiz, type QuizCategory } from "../constants";
+import { CATEGORIES, icons, type QuizCategory } from "../constants";
+import type { QuizItem as QuizItemType} from "../types";
 import styles from './QuizItem.module.css'
 
-export const QuizItem: React.FC<{ quiz: Quiz }> = ({ quiz }) => {
+export const QuizItem: React.FC<{ quiz: QuizItemType }> = ({ quiz }) => {
 
-  const category = CATEGORIES[quiz.category as keyof typeof CATEGORIES];
+  const category = CATEGORIES[parseInt(quiz.category as keyof typeof CATEGORIES)];
   const IconComponent = icons[category.icon as QuizCategory];
 
   return (
