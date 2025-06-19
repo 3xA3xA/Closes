@@ -17,5 +17,6 @@ namespace Application.Interfaces
         Task<bool> DeleteQuizByIdAsync(Guid quizId);
         Task<IEnumerable<QuizAnswer>> SubmitQuizAnswersByQuizAsync(SubmitQuizAnswersDto dto);
         Task<QuizWithAnswersDto?> GetQuizWithItemsAndAnswersForMemberByQuizIdAsync(Guid quizId, Guid groupMemberId);
+        Task<IEnumerable<Quiz>> GetAllQuizzesAsync();
     }
 }

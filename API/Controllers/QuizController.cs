@@ -185,5 +185,17 @@ namespace API.Controllers
             }
             return Ok(quizDto);
         }
+
+        [HttpGet]
+        [SwaggerOperation(
+            Summary = "Получение всех квизов",
+            Description = "Возвращает список всех квизов из базы данных."
+        )]
+        [SwaggerResponse(200, "Список квизов успешно получен", typeof(IEnumerable<Quiz>))]
+        public async Task<IActionResult> GetAllQuizzes()
+        {
+            var quizzes = await _quizService.GetAllQuizzesAsync();
+            return Ok(quizzes);
+        }
     }
 }

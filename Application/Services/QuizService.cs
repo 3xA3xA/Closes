@@ -172,5 +172,11 @@ namespace Application.Services
 
             return quizDto;
         }
+
+        public async Task<IEnumerable<Quiz>> GetAllQuizzesAsync()
+        {
+            // Можно добавить сортировку или фильтрацию при необходимости
+            return await _dbContext.Quizzes.ToListAsync();
+        }
     }
 }
