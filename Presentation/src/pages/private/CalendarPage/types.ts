@@ -1,7 +1,13 @@
+export type ActivityType = 'sport' | 'meeting' | 'education' | 'other';
+export type ActivityStatus = 'planned' | 'inProgress' | 'completed' | 'cancelled';
+
 export interface Activity {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  completed: boolean;
+    id: string;
+    name: string;
+    description: string;
+    type: number;
+    status: number;
+    startAt: Date;
+    endAt: Date | null;
+    groupId: string;
 }

@@ -1,0 +1,63 @@
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 340px;
+    max-width: 90%;
+    color: #000;
+}
+
+.formGroup {
+    margin-bottom: 4px;
+}
+
+.formGroup label {
+    display: block;
+    margin-bottom: 2px;
+}
+
+.formGroup input,
+.formGroup textarea,
+.formGroup select {
+    width: 100%;
+    padding: 2px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+.formGroup textarea {
+    height: 40px;
+}
+
+.buttonGroup {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.buttonGroup button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.buttonGroup button:last-child {
+    background-color: #34D399;
+    color: white;
+}

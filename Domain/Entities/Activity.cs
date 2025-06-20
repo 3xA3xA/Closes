@@ -18,6 +18,6 @@ namespace Domain.Entities
         public virtual Group Group { get; set; }
 
         // Участники активности
-        public virtual ICollection<ActivityMember> Participants { get; set; } = new List<ActivityMember>();
+        public virtual ICollection<ActivityMember> ActivityMembers { get; set; } = new List<ActivityMember>();
     }
 }
