@@ -12,5 +12,6 @@ namespace Application.Interfaces
     {
         Task<Activity> CreateActivityAsync(CreateActivityDto dto);
         Task<IEnumerable<Activity>> GetActivitiesByGroupIdAsync(Guid groupId);
+        Task<ActivityMember> JoinActivityAsync(JoinActivityDto dto);
     }
 }

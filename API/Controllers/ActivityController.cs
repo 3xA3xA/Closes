@@ -77,5 +77,30 @@ namespace API.Controllers
             var activities = await _activityService.GetActivitiesByGroupIdAsync(groupId);
             return Ok(activities);
         }
+
+        /// <summary>
+        /// Регистрация участника группы на активности.
+        /// </summary>
+        /// <param name="dto">DTO с идентификаторами активности и участника группы.</param>
+        /// <returns>Созданная запись ActivityMember.</returns>
+        [HttpPost("join")]
+        [SwaggerOperation(
+            Summary = "Присоединиться к активности",
+            Description = "Добавляет запись о том, что участник группы идёт на активность."
+        )]
+        [SwaggerResponse(201, "Участник успешно зарегистрирован на активности", typeof(ActivityMember))]
+        [SwaggerResponse(400, "Ошибка при регистрации участника на активности")]
+        public async Task<IActionResult> JoinActivity([FromBody] JoinActivityDto dto)
+        {
+            try
+            {
+                var activityMember = await _activityService.JoinActivityAsync(dto);
+                return CreatedAtAction(nameof(GetActivityById), new { id = activityMember.Id }, activityMember);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }

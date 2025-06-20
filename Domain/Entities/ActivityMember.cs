@@ -12,5 +12,4 @@
         public virtual GroupMember GroupMember { get; set; }
         public virtual ICollection<ActivityMember> ActivityMembers { get; set; } = new List<ActivityMember>();
     }
-
 }

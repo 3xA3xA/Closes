@@ -44,5 +44,24 @@ namespace Application.Services
                 .Where(a => a.GroupId == groupId)
                 .ToListAsync();
         }
+
+        public async Task<ActivityMember> JoinActivityAsync(JoinActivityDto dto)
+        {
+            var exists = await _dbContext.ActivityMembers.AnyAsync(am =>
+                 am.ActivityId == dto.ActivityId && am.GroupMemberId == dto.GroupMemberId);
+            if (exists)
+                throw new Exception("Участник уже зарегистрирован на эту активность.");
+
+            var activityMember = new ActivityMember
+            {
+                ActivityId = dto.ActivityId,
+                GroupMemberId = dto.GroupMemberId
+            };
+
+            _dbContext.ActivityMembers.Add(activityMember);
+            await _dbContext.SaveChangesAsync();
+
+            return activityMember;
+        }
     }
 }
