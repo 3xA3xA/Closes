@@ -38,9 +38,11 @@ namespace Application.Services
             return activity;
         }
 
-        public async Task<IEnumerable<Activity>> GetAllActivitiesAsync()
+        public async Task<IEnumerable<Activity>> GetActivitiesByGroupIdAsync(Guid groupId)
         {
-            return await _dbContext.Activities.ToListAsync();
+            return await _dbContext.Activities
+                .Where(a => a.GroupId == groupId)
+                .ToListAsync();
         }
     }
 }

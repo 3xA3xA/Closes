@@ -62,18 +62,19 @@ namespace API.Controllers
         }
 
         /// <summary>
-        /// Получение всех активностей.
+        /// Получение всех активностей по groupId.
         /// </summary>
-        /// <returns>Список всех активностей.</returns>
-        [HttpGet]
+        /// <param name="groupId">Уникальный идентификатор группы.</param>
+        /// <returns>Список активностей для указанной группы.</returns>
+        [HttpGet("{groupId:guid}")]
         [SwaggerOperation(
-            Summary = "Получение всех активностей",
-            Description = "Возвращает список всех активностей из базы данных."
+            Summary = "Получение активностей по groupId",
+            Description = "Возвращает список активностей для заданной группы по её уникальному идентификатору."
         )]
         [SwaggerResponse(200, "Активности успешно получены", typeof(IEnumerable<Activity>))]
-        public async Task<IActionResult> GetAllActivities()
+        public async Task<IActionResult> GetActivitiesByGroupId(Guid groupId)
         {
-            var activities = await _activityService.GetAllActivitiesAsync();
+            var activities = await _activityService.GetActivitiesByGroupIdAsync(groupId);
             return Ok(activities);
         }
     }

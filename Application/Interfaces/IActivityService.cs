@@ -11,6 +11,6 @@ namespace Application.Interfaces
     public interface IActivityService
     {
         Task<Activity> CreateActivityAsync(CreateActivityDto dto);
-        Task<IEnumerable<Activity>> GetAllActivitiesAsync();
+        Task<IEnumerable<Activity>> GetActivitiesByGroupIdAsync(Guid groupId);
     }
 }
