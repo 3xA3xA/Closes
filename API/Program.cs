@@ -37,6 +37,7 @@ namespace API
             builder.Services.AddScoped<IGroupService, GroupService>();
             builder.Services.AddScoped<IWishlistService, WishlistService>();
             builder.Services.AddScoped<IQuizService, QuizService>();
+            builder.Services.AddScoped<IActivityService, ActivityService>();
 
 
             // Регистрируем контроллеры
