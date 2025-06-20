@@ -22,3 +22,8 @@ export const getGroupActivity = async (groupId: string) => {
     const response = await api.get(`${API_URL}/by-group/${groupId}`);
     return response.data
 }
+
+export const addMemberInActivity = async (activityId: string, groupMemberId: string) => {
+    const response = await api.post(`${API_URL}/join`, { activityId: activityId, groupMemberId: groupMemberId });
+    return response.data
+}

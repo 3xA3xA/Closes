@@ -13,6 +13,7 @@
   padding: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
+  align-items: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -37,6 +38,7 @@
 .details {
   flex: 1;
   padding-left: 16px;
+  color: #000;
 }
 
 .details h3 {
@@ -67,4 +69,11 @@
   padding: 40px 20px;
   color: #666;
   font-size: 16px;
+}
+
+.doneBtn {
+  height: 40px;
+  border-radius: 4px;
+  padding: 3px;
+  background-color: #34D399;
 }
