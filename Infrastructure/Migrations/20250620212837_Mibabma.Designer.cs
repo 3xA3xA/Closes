@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250617181028_Init")]
-    partial class Init
+    [Migration("20250620212837_Mibabma")]
+    partial class Mibabma
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,14 +70,19 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("ActivityId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("ActivityMemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GroupMemberId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ActivityId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ActivityMemberId");
+
+                    b.HasIndex("GroupMemberId");
 
                     b.ToTable("ActivityMembers");
                 });
@@ -157,6 +162,10 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -201,6 +210,9 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Order")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("QuizId")
                         .HasColumnType("uniqueidentifier");
@@ -370,15 +382,19 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.User", "User")
+                    b.HasOne("Domain.Entities.ActivityMember", null)
                         .WithMany("ActivityMembers")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("ActivityMemberId");
+
+                    b.HasOne("Domain.Entities.GroupMember", "GroupMember")
+                        .WithMany()
+                        .HasForeignKey("GroupMemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Activity");
 
-                    b.Navigation("User");
+                    b.Navigation("GroupMember");
                 });
 
             modelBuilder.Entity("Domain.Entities.GroupMember", b =>
@@ -503,6 +519,11 @@ namespace Infrastructure.Migrations
                     b.Navigation("Participants");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ActivityMember", b =>
+                {
+                    b.Navigation("ActivityMembers");
+                });
+
             modelBuilder.Entity("Domain.Entities.Group", b =>
                 {
                     b.Navigation("Activities");
@@ -533,8 +554,6 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.Navigation("ActivityMembers");
-
                     b.Navigation("CreatedQuizzes");
 
                     b.Navigation("CreatedWishlistItems");

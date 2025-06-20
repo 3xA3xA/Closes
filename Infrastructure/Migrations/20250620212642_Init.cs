@@ -100,6 +100,7 @@ namespace Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
@@ -146,7 +147,8 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ActivityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    GroupMemberId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -158,11 +160,16 @@ namespace Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_ActivityMembers_GroupMembers_GroupMemberId",
+                        column: x => x.GroupMemberId,
+                        principalTable: "GroupMembers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
                         name: "FK_ActivityMembers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -171,6 +178,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     QuizId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -281,6 +289,11 @@ namespace Infrastructure.Migrations
                 name: "IX_ActivityMembers_ActivityId",
                 table: "ActivityMembers",
                 column: "ActivityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ActivityMembers_GroupMemberId",
+                table: "ActivityMembers",
+                column: "GroupMemberId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ActivityMembers_UserId",

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250619131727_AddOrderToQuizItem")]
-    partial class AddOrderToQuizItem
+    [Migration("20250620212642_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -70,12 +70,17 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("ActivityId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("GroupMemberId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ActivityId");
+
+                    b.HasIndex("GroupMemberId");
 
                     b.HasIndex("UserId");
 
@@ -377,15 +382,19 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entities.User", "User")
-                        .WithMany("ActivityMembers")
-                        .HasForeignKey("UserId")
+                    b.HasOne("Domain.Entities.GroupMember", "GroupMember")
+                        .WithMany()
+                        .HasForeignKey("GroupMemberId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Domain.Entities.User", null)
+                        .WithMany("ActivityMembers")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Activity");
 
-                    b.Navigation("User");
+                    b.Navigation("GroupMember");
                 });
 
             modelBuilder.Entity("Domain.Entities.GroupMember", b =>

@@ -5,10 +5,12 @@
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public Guid ActivityId { get; set; }
-        public Guid UserId { get; set; }
+        public Guid GroupMemberId { get; set; }
 
         // Навигационные свойства
         public virtual Activity Activity { get; set; }
-        public virtual User User { get; set; }
+        public virtual GroupMember GroupMember { get; set; }
+        public virtual ICollection<ActivityMember> ActivityMembers { get; set; } = new List<ActivityMember>();
     }
+
 }
