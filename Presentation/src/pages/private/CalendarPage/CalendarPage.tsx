@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Header } from '../../../components/semantic/Header/Header'
 import { NavBar } from '../../../components/semantic/NavBar/NavBar'
 import styles from './CalendarPage.module.css'
@@ -7,11 +7,29 @@ import type { Activity } from './types';
 import ActivityList from './ActivityList/ActivityList';
 import { mockActivities } from './mocks';
 import { CreateActivityModal } from './CreateActivityModal/CreateActivityModal';
+import { useParams } from 'react-router-dom';
+import { getGroupActivity } from '../../../api/ActivityService/activityService';
 
 export const CalendarPage = () => {
+    const { groupId } = useParams()
+
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [activities, setActivities] = useState<Activity[]>(mockActivities);
     const [showCreateForm, setShowCreateForm] = useState(false);
+
+    useEffect(() => {
+        const fetchActivities = async () => {
+            try {
+                const activitieData = await getGroupActivity(groupId!);
+                console.log('activitieData', activitieData)
+                setActivities(activitieData)
+            } catch (err) {
+                console.error('Ошибка запроса активитиз: ', err)
+            }
+        }
+
+        fetchActivities()
+    }, [groupId])
 
     const handleDateSelect = (date: Date) => {
         setSelectedDate(date);

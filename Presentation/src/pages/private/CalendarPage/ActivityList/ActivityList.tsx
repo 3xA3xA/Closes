@@ -8,18 +8,18 @@ interface ActivityListProps {
 const ActivityList = ({ activities }: ActivityListProps) => {
   const now = new Date();
   const upcomingActivities = activities
-    .filter(activity => new Date(activity.date) >= now)
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    .filter(activity => new Date(activity.startAt) >= now)
+    .sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime());
 
   return (
     <ul className={styles.list}>
       {upcomingActivities.map(activity => (
         <li key={activity.id} className={styles.item}>
           <div className={styles.date}>
-            {new Date(activity.date).toLocaleDateString()}
+            {new Date(activity.startAt).toLocaleDateString()}
           </div>
           <div className={styles.details}>
-            <h3>{activity.title}</h3>
+            <h3>{activity.name}</h3>
             <p>{activity.description}</p>
           </div>
         </li>

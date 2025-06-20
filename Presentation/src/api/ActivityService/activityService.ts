@@ -17,3 +17,8 @@ export const createGroupActivity = async (params: CreateGroupActivityParams) => 
   console.log('инфа по активности', response.data)
   return response.data
 }
+
+export const getGroupActivity = async (groupId: string) => {
+    const response = await api.get(`${API_URL}/by-group/${groupId}`);
+    return response.data
+}

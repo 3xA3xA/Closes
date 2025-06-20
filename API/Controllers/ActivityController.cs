@@ -66,7 +66,7 @@ namespace API.Controllers
         /// </summary>
         /// <param name="groupId">Уникальный идентификатор группы.</param>
         /// <returns>Список активностей для указанной группы.</returns>
-        [HttpGet("{groupId:guid}")]
+        [HttpGet("by-group/{groupId:guid}")]
         [SwaggerOperation(
             Summary = "Получение активностей по groupId",
             Description = "Возвращает список активностей для заданной группы по её уникальному идентификатору."
