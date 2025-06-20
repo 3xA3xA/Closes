@@ -2,6 +2,7 @@
 using Domain.DTOs;
 using Domain.Entities;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,6 +36,11 @@ namespace Application.Services
             _dbContext.Activities.Add(activity);
             await _dbContext.SaveChangesAsync();
             return activity;
+        }
+
+        public async Task<IEnumerable<Activity>> GetAllActivitiesAsync()
+        {
+            return await _dbContext.Activities.ToListAsync();
         }
     }
 }

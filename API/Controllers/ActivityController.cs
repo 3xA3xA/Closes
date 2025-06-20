@@ -60,5 +60,21 @@ namespace API.Controllers
             // Для примера возвращается NotFound.
             return NotFound();
         }
+
+        /// <summary>
+        /// Получение всех активностей.
+        /// </summary>
+        /// <returns>Список всех активностей.</returns>
+        [HttpGet]
+        [SwaggerOperation(
+            Summary = "Получение всех активностей",
+            Description = "Возвращает список всех активностей из базы данных."
+        )]
+        [SwaggerResponse(200, "Активности успешно получены", typeof(IEnumerable<Activity>))]
+        public async Task<IActionResult> GetAllActivities()
+        {
+            var activities = await _activityService.GetAllActivitiesAsync();
+            return Ok(activities);
+        }
     }
 }
