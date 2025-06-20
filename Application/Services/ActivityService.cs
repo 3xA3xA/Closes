@@ -42,6 +42,8 @@ namespace Application.Services
         {
             return await _dbContext.Activities
                 .Where(a => a.GroupId == groupId)
+                .Include(a => a.ActivityMembers)
+                    .ThenInclude(am => am.GroupMember)
                 .ToListAsync();
         }
 
