@@ -1,0 +1,114 @@
+.root {
+    padding-bottom: 90px;
+}
+
+.main {
+    padding: 16px 32px;
+    max-width: 500px;
+    margin: 0 auto;
+    color: #000;
+}
+
+loading,
+.error {
+  text-align: center;
+  padding: 20px;
+  font-size: 18px;
+}
+
+.header {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.membersContainer {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+.membersCircle {
+  display: flex;
+}
+
+.memberAvatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid white;
+  margin-left: -12px;
+}
+
+.memberAvatar:first-child {
+  margin-left: 0;
+}
+
+membersList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.memberItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.memberColorIndicator {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 1px solid #eee;
+}
+
+.memberName {
+  font-size: 16px;
+}
+
+.dateText {
+  text-align: center;
+  color: #666;
+  margin-bottom: 32px;
+}
+
+.eventsSection {
+  margin-bottom: 32px;
+}
+
+.eventsHeader {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.eventsList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.eventCard {
+  padding: 16px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.eventTitle {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.eventDate {
+  font-size: 14px;
+  color: #666;
+}
+
+.noEvents {
+  color: #666;
+  text-align: center;
+}

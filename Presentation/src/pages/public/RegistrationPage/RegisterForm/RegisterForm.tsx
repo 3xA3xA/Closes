@@ -52,7 +52,7 @@ export const RegistrationForm = () => {
           placeholder='Никнейм'
           type="text"
           {...register('username')}
-          className={errors.email ? 'error' : ''}
+          className={styles.username}
         />
         {errors.email && <span className="error-message">{errors.email.message}</span>}
       </div>

@@ -48,3 +48,12 @@ button:disabled {
     background: #cccccc;
     cursor: not-allowed;
 }
+
+.username {
+    border-radius: 16px !important;
+    border: 2px solid #E8EAED;
+    width: 100%;
+    padding: 8px;
+    color: #718EBF;
+    background-color: #FFF;
+}

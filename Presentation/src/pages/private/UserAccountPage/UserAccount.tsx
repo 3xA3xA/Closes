@@ -8,6 +8,8 @@ import image from '../../../../../API/Uploads/Avatars/730e658c-4a51-4dc6-8ec3-d9
 import { UserGroupChanger } from './UserGroupChanger/UserGroupChanger'
 import { GroupJoinForm } from './GroupJoinForm/GroupJoinForm'
 import type { Group } from './types'
+import male from '../../../assets/male.jpg'
+import female from '../../../assets/female.jpg'
 
 interface UserAccountPageProps {
     isModalOpen: boolean;
@@ -47,7 +49,7 @@ export const UserAccountPage: React.FC<UserAccountPageProps> = ({ isModalOpen, s
             <div className={styles.avatarContainer} onClick={handleAvatarClick}>
                 <img 
                     className={styles.avatar} 
-                    src={image} 
+                    src={female} 
                     alt="avatar" 
                 />
                 <input
